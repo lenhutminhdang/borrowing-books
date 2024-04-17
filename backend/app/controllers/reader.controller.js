@@ -122,10 +122,10 @@ exports.removeFromFavorite = async (req, res, next) => {
     );
 
     if (document.acknowledged && document.modifiedCount === 0) {
-      return res.send("Book already removed from favorite");
+      return res.send({ message: "Book already removed from favorite" });
     }
 
-    return res.send("Remove book from favorite sucessfully");
+    return res.send({ message: "Remove book from favorite sucessfully" });
   } catch (error) {
     return next(
       new ApiError(500, "An error occur while removing favorite book")
@@ -144,10 +144,10 @@ exports.addToFavorite = async (req, res, next) => {
     );
 
     if (document.acknowledged && document.modifiedCount === 0) {
-      return res.send("Book already added to favorite");
+      return res.send({ message: "Book already added to favorite" });
     }
 
-    return res.send("Add book to favorite sucessfully");
+    return res.send({ message: "Add book to favorite sucessfully" });
   } catch (error) {
     return next(new ApiError(500, "An error occur while adding favorite book"));
   }
