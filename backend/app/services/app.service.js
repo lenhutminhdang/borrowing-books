@@ -63,10 +63,6 @@ class AppService {
   //   const result = await this.Collection.deleteMany({});
   //   return result.deletedCount;
   // }
-
-  // async findFavorite() {
-  //   return await this.find({ favorite: true });
-  // }
 }
 
 module.exports = AppService;

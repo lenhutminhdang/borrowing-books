@@ -1,4 +1,6 @@
+const { ObjectId } = require("mongodb");
 const ApiError = require("../api-error");
+const BookService = require("../services/book.service");
 const ReaderService = require("../services/reader.service");
 const MongoDB = require("../utils/mongodb.util");
 
@@ -86,6 +88,71 @@ exports.delete = async (req, res, next) => {
   }
 };
 
+exports.findAllFavorite = async (req, res, next) => {
+  try {
+    const readerService = new ReaderService(MongoDB.client);
+    const bookService = new BookService(MongoDB.client);
+
+    const reader = await readerService.findById(req.body._id);
+    const validFavoriteBookIds = reader.favoriteBooks.map((id) =>
+      ObjectId.isValid(id) ? new ObjectId(id) : null
+    );
+
+    const documents = await bookService.find({
+      _id: { $in: validFavoriteBookIds },
+    });
+
+    return res.send(documents);
+  } catch (error) {
+    return next(
+      new ApiError(500, "An error occur while retrieving favorite books")
+    );
+  }
+};
+
+exports.removeFromFavorite = async (req, res, next) => {
+  try {
+    const { id: bookIdToRemove } = req.params;
+    const { _id: readerId } = req.body;
+
+    const readerService = new ReaderService(MongoDB.client);
+    const document = await readerService.removeFromFavorite(
+      ObjectId.isValid(readerId) ? new ObjectId(readerId) : null,
+      bookIdToRemove
+    );
+
+    if (document.acknowledged && document.modifiedCount === 0) {
+      return res.send("Book already removed from favorite");
+    }
+
+    return res.send("Remove book from favorite sucessfully");
+  } catch (error) {
+    return next(
+      new ApiError(500, "An error occur while removing favorite book")
+    );
+  }
+};
+
+exports.addToFavorite = async (req, res, next) => {
+  try {
+    const { _id: readerId, bookIdToAdd } = req.body;
+
+    const readerService = new ReaderService(MongoDB.client);
+    const document = await readerService.addToFavorite(
+      ObjectId.isValid(readerId) ? new ObjectId(readerId) : null,
+      bookIdToAdd
+    );
+
+    if (document.acknowledged && document.modifiedCount === 0) {
+      return res.send("Book already added to favorite");
+    }
+
+    return res.send("Add book to favorite sucessfully");
+  } catch (error) {
+    return next(new ApiError(500, "An error occur while adding favorite book"));
+  }
+};
+
 // exports.deleteAll = async (req, res, next) => {
 //   try {
 //     const readerService = new ReaderService(MongoDB.client);
@@ -95,17 +162,5 @@ exports.delete = async (req, res, next) => {
 //     });
 //   } catch (error) {
 //     return next(new ApiError(500, "An error occur while deleting all readers"));
-//   }
-// };
-
-// exports.findAllFavorite = async (req, res, next) => {
-//   try {
-//     const readerService = new ReaderService(MongoDB.client);
-//     const documents = await readerService.findFavorite();
-//     return res.send(documents);
-//   } catch (error) {
-//     return next(
-//       new ApiError(500, "An error occur while retrieving favorite readers")
-//     );
 //   }
 // };

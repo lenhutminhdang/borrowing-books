@@ -25,6 +25,24 @@ class ReaderService extends AppService {
 
     return reader;
   }
+
+  async addToFavorite(readerId, bookIdToAdd) {
+    const result = await this.Collection.updateOne(
+      { _id: readerId },
+      { $addToSet: { favoriteBooks: bookIdToAdd } }
+    );
+
+    return result;
+  }
+
+  async removeFromFavorite(readerId, bookIdToRemove) {
+    const result = await this.Collection.updateOne(
+      { _id: readerId },
+      { $pull: { favoriteBooks: bookIdToRemove } }
+    );
+
+    return result;
+  }
 }
 
 module.exports = ReaderService;
