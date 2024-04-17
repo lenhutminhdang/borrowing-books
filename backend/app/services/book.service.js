@@ -8,12 +8,12 @@ class BookService extends AppService {
 
   extractData(payload) {
     const book = {
-      name: payload.name, // Tam The
-      price: payload.price, // 10.000
-      volumeNumber: payload.volumeNumber, // 3
-      author: payload.author, // Luu Tu Han
-      publicationYear: payload.publicationYear, // 2018
-      publisher: payload.publisher, // 001a..
+      name: payload.name,
+      price: payload.price,
+      volumeNumber: payload.volumeNumber,
+      author: payload.author,
+      publicationYear: payload.publicationYear,
+      publisher: payload.publisher,
     };
 
     // remove undefined fields
