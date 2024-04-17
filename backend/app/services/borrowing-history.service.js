@@ -10,7 +10,6 @@ class BorrowingHistoryService extends AppService {
       reader: payload.reader,
       book: payload.book,
       borrowDate: payload.borrowDate,
-      returnDate: payload.returnDate,
       dueDate: payload.dueDate,
       status: payload.status,
     };
@@ -23,6 +22,14 @@ class BorrowingHistoryService extends AppService {
     });
 
     return borrowingHistory;
+  }
+
+  async updateStatus(historyId, newStatus) {
+    const result = await this.Collection.updateOne(
+      { _id: historyId },
+      { $set: { status: newStatus } }
+    );
+    return result;
   }
 }
 

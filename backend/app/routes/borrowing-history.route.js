@@ -8,6 +8,7 @@ router
   .route("/:id")
   .get(borrowingHistory.findOne)
   .put(borrowingHistory.update)
+  .patch(borrowingHistory.updateStatus)
   .delete(borrowingHistory.delete);
 
 module.exports = router;
