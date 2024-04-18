@@ -5,6 +5,7 @@ import FavoritesPage from "../views/FavoritesPage.vue";
 import ProfilePage from "../views/ProfilePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import SignupPage from "../views/SignupPage.vue";
+import BookDetails from "../views/BookDetails.vue";
 import NotFound from "../views/NotFound.vue";
 
 const routes = [
@@ -12,6 +13,11 @@ const routes = [
     path: "/",
     name: "home",
     component: HomePage,
+  },
+  {
+    path: "/books/:id",
+    name: "book-details",
+    component: BookDetails,
   },
   {
     path: "/login",
