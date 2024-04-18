@@ -4,14 +4,12 @@ import Link from "./Link.vue";
 </script>
 
 <template>
-  <ul
-    class="flex flex-col gap-2 items-center mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium"
-  >
-    <Link route-name="home" label="Home" />
-    <Link route-name="history" label="History" />
-    <Link route-name="favorites" label="Favorites" />
-    <Link route-name="profile" label="My profile" />
+  <ul class="flex flex-col gap-3 items-center md:flex-row">
+    <Link route-name="home" label="Trang chủ" />
+    <Link route-name="history" label="Lịch sử" />
+    <Link route-name="favorites" label="Yêu thích" />
+    <Link route-name="profile" label="Tài khoản" />
 
-    <LinkButton route-name="login" label="Login" />
+    <LinkButton route-name="login" label="Đăng nhập" />
   </ul>
 </template>

@@ -1,6 +1,7 @@
 import createApiClient from "./api.service";
+
 class BookService {
-  constructor(baseUrl = "/api/books") {
+  constructor(baseUrl = "http://localhost:3000/api/books") {
     this.api = createApiClient(baseUrl);
   }
   async getAll() {
@@ -22,4 +23,4 @@ class BookService {
   //   return (await this.api.delete(`/${id}`)).data;
   // }
 }
-export default new ContactService();
+export default new BookService();
