@@ -9,6 +9,8 @@ class BookService extends AppService {
   extractData(payload) {
     const book = {
       name: payload.name,
+      image: payload.image,
+      description: payload.description,
       price: payload.price,
       volumeNumber: payload.volumeNumber,
       author: payload.author,
