@@ -5,7 +5,7 @@ import MainHeader from "./components/header/MainHeader.vue";
 <template>
   <div>
     <MainHeader />
-    <div class="px-4 mt-8 lg:mx-32 xl:mx-40 bg-gray-200">
+    <div class="px-4 mt-8 mb-16 lg:mx-32 xl:mx-40">
       <router-view />
     </div>
   </div>
