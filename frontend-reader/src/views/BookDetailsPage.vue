@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import bookService from "../services/book.service";
 import { formatCurrency } from "../utils/utils";
@@ -9,20 +9,12 @@ import Button from "../components/UI/Button.vue";
 
 const route = useRoute();
 const book = ref(null);
-const formattedPrice = ref(0);
 
 const amount = ref(1);
 
 watchEffect(async () => {
   const response = await bookService.get(route.params.id);
   book.value = response[0];
-  if (book.value.price) {
-    formattedPrice.value = computed(() => {
-      const price = formatCurrency(book.value.price);
-
-      return price;
-    });
-  }
 });
 </script>
 
@@ -48,10 +40,10 @@ watchEffect(async () => {
         <!-- Borrowing price -->
         <p class="my-5 text-center xl:text-left">
           <span class="text-3xl text-yellow-400">{{
-            formattedPrice.value
+            book.price > 0 ? formatCurrency(book.price) : "Miễn phí"
           }}</span>
-          <span class="text-2xl"> /</span>
-          <span class="text-xl">ngày</span>
+          <span v-if="book.price > 0" class="text-2xl"> /</span>
+          <span v-if="book.price > 0" class="text-xl">ngày</span>
         </p>
 
         <!-- Book info -->
