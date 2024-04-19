@@ -5,7 +5,7 @@ import FavoritesPage from "../views/FavoritesPage.vue";
 import ProfilePage from "../views/ProfilePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import SignupPage from "../views/SignupPage.vue";
-import BookDetails from "../views/BookDetails.vue";
+import BookDetailsPage from "../views/BookDetailsPage.vue";
 import NotFound from "../views/NotFound.vue";
 
 const routes = [
@@ -17,7 +17,7 @@ const routes = [
   {
     path: "/books/:id",
     name: "book-details",
-    component: BookDetails,
+    component: BookDetailsPage,
   },
   {
     path: "/login",
@@ -63,7 +63,7 @@ const routes = [
   // },
 ];
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 export default router;
