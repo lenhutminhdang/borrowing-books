@@ -1,9 +1,12 @@
 <template>
-  <router-link :to="{ name: 'home' }" class="flex items-center">
+  <router-link :to="{ name: 'home' }" class="flex gap-2 items-center">
+    <span id="logo" class="inline-block size-10 rounded-full overflow-hidden">
+      <img src="../../assets/logo.png" alt="logo" />
+    </span>
     <span
-      class="self-center text-2xl font-semibold whitespace-nowrap text-yellow-400"
+      class="self-center text-2xl font-semibold whitespace-nowrap text-main"
     >
-      BoBooks
+      Love Books
     </span>
   </router-link>
 </template>

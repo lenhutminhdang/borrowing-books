@@ -23,7 +23,7 @@ watchEffect(async () => {
       v-if="books"
     >
       <li
-        v-for="book in [...books, ...books, ...books]"
+        v-for="book in books"
         :key="book._id"
         class="border border-gray-300 rounded-lg p-4"
       >
@@ -43,9 +43,9 @@ watchEffect(async () => {
             <p class="mb-2">{{ book.author }}</p>
             <p class="mt-auto">
               <span class="text-yellow-500 text-xl">{{
-                formatCurrency(book.price)
+                book.price > 0 ? formatCurrency(book.price) : "Miễn phí"
               }}</span>
-              /ngày
+              <span v-if="book.price > 0">/ngày</span>
             </p>
           </div>
         </router-link>

@@ -16,6 +16,20 @@ watchEffect(async () => {
   const response = await bookService.get(route.params.id);
   book.value = response[0];
 });
+
+const onDecrease = () => {
+  if (amount.value <= 1) amount.value = 1;
+  else --amount.value;
+};
+const onIncrease = () => {
+  ++amount.value;
+};
+const onChange = (e) => {
+  if (e.target.value <= 1) amount.value = 1;
+  else {
+    amount.value = +e.target.value;
+  }
+};
 </script>
 
 <template>
@@ -39,7 +53,7 @@ watchEffect(async () => {
 
         <!-- Borrowing price -->
         <p class="my-5 text-center xl:text-left">
-          <span class="text-3xl text-yellow-400">{{
+          <span class="text-3xl text-yellow-500">{{
             book.price > 0 ? formatCurrency(book.price) : "Miễn phí"
           }}</span>
           <span v-if="book.price > 0" class="text-2xl"> /</span>
@@ -69,7 +83,7 @@ watchEffect(async () => {
         <div class="mt-4 inline-flex gap-2">
           <!-- Amount -->
           <div class="w-36 inline-grid grid-cols-3 gap-[1px] text-white">
-            <ButtonAmount :on-click="() => --amount" classes="rounded-l-md">
+            <ButtonAmount :on-click="onDecrease" classes="rounded-l-md">
               -
             </ButtonAmount>
             <input
@@ -78,21 +92,21 @@ watchEffect(async () => {
               min="1"
               max="100"
               :value="amount"
-              @change="(e) => (amount = e.target.value)"
+              @change="onChange"
               class="bg-[#333333] py-3 px-2 text-white outline-none text-center"
             />
-            <ButtonAmount :on-click="() => ++amount" classes="rounded-r-md">
+            <ButtonAmount :on-click="onIncrease" classes="rounded-r-md">
               +
             </ButtonAmount>
           </div>
 
           <!-- Order -->
           <Button
-            label="ĐẶT NGAY"
             :in-stock="true"
-            :on-click="() => console.log(`Borrow book with ${amount} days`)"
+            :on-click="() => console.log(`Borrow book for ${amount} days`)"
             classes="py-2 px-10"
-          />
+            >ĐẶT NGAY</Button
+          >
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(["label", "onClick", "classes", "inStock"]);
+const props = defineProps(["onClick", "classes", "inStock"]);
 </script>
 
 <template>
@@ -7,8 +7,8 @@ const props = defineProps(["label", "onClick", "classes", "inStock"]);
     @click="onClick"
     :disabled="!inStock"
     :class="classes"
-    class="text-center font-semibold btn-primary text-gray-700 bg-yellow-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+    class="btn-primary disabled:bg-gray-300 disabled:cursor-not-allowed"
   >
-    {{ label }}
+    <slot />
   </button>
 </template>
