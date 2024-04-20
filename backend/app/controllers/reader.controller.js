@@ -3,20 +3,109 @@ const ApiError = require("../api-error");
 const BookService = require("../services/book.service");
 const ReaderService = require("../services/reader.service");
 const MongoDB = require("../utils/mongodb.util");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// Create and Save a new Reader
-exports.create = async (req, res, next) => {
+const bcryptSalt = bcrypt.genSaltSync(10);
+const jwtSecret = "goodbyeworld";
+
+function getReaderDataFromReq(req) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(req.cookies.token, jwtSecret, {}, (err, userData) => {
+      if (err) throw err;
+
+      resolve(userData);
+    });
+  });
+}
+
+// Create and Save a new Reader (SIGNUP)
+exports.signup = async (req, res, next) => {
   if (!req.body?.name) {
     return next(new ApiError(400, "Name can not be empty"));
   }
 
+  const { name, email, password } = req.body;
+
   try {
     const readerService = new ReaderService(MongoDB.client);
-    const document = await readerService.create(req.body);
-    return res.send(document);
+    const userDoc = await readerService.create({
+      name,
+      email,
+      password: bcrypt.hashSync(password, bcryptSalt),
+      birthDay: "",
+      gender: "",
+      address: "",
+      phone: "",
+      favoriteBooks: [],
+    });
+    return res.send(userDoc);
   } catch (error) {
     console.log("error", error);
     return next(new ApiError(500, "An error occur while creating reader"));
+  }
+};
+
+// LOGIN
+exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const readerService = new ReaderService(MongoDB.client);
+    const readerDoc = await readerService.findByEmail(email);
+
+    if (!readerDoc) return next(new ApiError(404, "Reader not found!"));
+
+    // Found reader
+    if (readerDoc) {
+      const passwordOK = bcrypt.compareSync(password, readerDoc.password);
+
+      if (passwordOK) {
+        jwt.sign(
+          { id: readerDoc._id, email: readerDoc.email },
+          jwtSecret,
+          {},
+          (err, token) => {
+            if (err) throw err;
+
+            res.cookie("token", token, {
+              sameSite: "none",
+            });
+            res.json(readerDoc); // DONT FORGET TO ADD THIS SHIT AFTER set cookie
+          }
+        );
+      } else {
+        res.status(422).json("Wrong password");
+      }
+    }
+    // Not found reader
+    else {
+      res.json("not found user");
+    }
+  } catch (error) {
+    return next(new ApiError(500, `Error retrieving reader`));
+  }
+};
+
+// logout
+exports.logout = async (req, res, next) => {
+  res.cookie("token", "").json(true);
+};
+
+// Get reader profile
+exports.getProfile = async (req, res, next) => {
+  const { token } = req.cookies;
+  try {
+    if (token) {
+      const readerService = new ReaderService(MongoDB.client);
+      const verifiedReader = await getReaderDataFromReq(req);
+      const readerDoc = await readerService.findById(verifiedReader.id);
+
+      if (!readerDoc) return next(new ApiError(404, "Reader not found!"));
+
+      return res.json(readerDoc);
+    }
+  } catch (error) {
+    return next(new ApiError(500, `Error retrieving reader`));
   }
 };
 
@@ -39,7 +128,7 @@ exports.findAll = async (req, res, next) => {
   return res.send(documents);
 };
 
-// Find a single contact with an id
+// Find a single reader with an id
 exports.findOne = async (req, res, next) => {
   try {
     const readerService = new ReaderService(MongoDB.client);
@@ -89,20 +178,23 @@ exports.delete = async (req, res, next) => {
 };
 
 exports.findAllFavorite = async (req, res, next) => {
+  const { token } = req.cookies;
   try {
-    const readerService = new ReaderService(MongoDB.client);
-    const bookService = new BookService(MongoDB.client);
+    if (token) {
+      const readerService = new ReaderService(MongoDB.client);
+      const verifiedReader = await getReaderDataFromReq(req);
 
-    const reader = await readerService.findById(req.body._id);
-    const validFavoriteBookIds = reader.favoriteBooks.map((id) =>
-      ObjectId.isValid(id) ? new ObjectId(id) : null
-    );
+      const favoriteBooks = await readerService.findAllFavorites(
+        ObjectId.isValid(verifiedReader.id)
+          ? new ObjectId(verifiedReader.id)
+          : null
+      );
 
-    const documents = await bookService.find({
-      _id: { $in: validFavoriteBookIds },
-    });
+      if (!favoriteBooks)
+        return next(new ApiError(404, "favorite books not found!"));
 
-    return res.send(documents);
+      return res.json(favoriteBooks);
+    }
   } catch (error) {
     return next(
       new ApiError(500, "An error occur while retrieving favorite books")
@@ -112,13 +204,12 @@ exports.findAllFavorite = async (req, res, next) => {
 
 exports.removeFromFavorite = async (req, res, next) => {
   try {
-    const { id: bookIdToRemove } = req.params;
-    const { _id: readerId } = req.body;
+    const { id: readerId, bookId: bookIdToRemove } = req.body;
 
     const readerService = new ReaderService(MongoDB.client);
     const document = await readerService.removeFromFavorite(
       ObjectId.isValid(readerId) ? new ObjectId(readerId) : null,
-      bookIdToRemove
+      ObjectId.isValid(bookIdToRemove) ? new ObjectId(bookIdToRemove) : null
     );
 
     if (document.acknowledged && document.modifiedCount === 0) {
@@ -135,12 +226,12 @@ exports.removeFromFavorite = async (req, res, next) => {
 
 exports.addToFavorite = async (req, res, next) => {
   try {
-    const { _id: readerId, bookIdToAdd } = req.body;
+    const { id: readerId, bookId: bookIdToAdd } = req.body;
 
     const readerService = new ReaderService(MongoDB.client);
     const document = await readerService.addToFavorite(
       ObjectId.isValid(readerId) ? new ObjectId(readerId) : null,
-      bookIdToAdd
+      ObjectId.isValid(bookIdToAdd) ? new ObjectId(bookIdToAdd) : null
     );
 
     if (document.acknowledged && document.modifiedCount === 0) {

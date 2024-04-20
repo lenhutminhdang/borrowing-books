@@ -1,21 +1,52 @@
 <script setup>
 import { ref, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
 import { formatCurrency } from "../utils/utils";
 import BookInfo from "../components/BookInfo.vue";
 import ButtonAmount from "../components/UI/ButtonAmount.vue";
 import Button from "../components/UI/Button.vue";
+import { useAuthStore } from "../store";
+import readerService from "../services/reader.service";
 
 const route = useRoute();
+const router = useRouter();
+const store = useAuthStore();
 const book = ref(null);
-
 const amount = ref(1);
 
 watchEffect(async () => {
   const response = await bookService.get(route.params.id);
   book.value = response[0];
 });
+
+const addToFavorite = async () => {
+  if (!store.isLoggedIn) {
+    router.push({ name: "login" });
+  }
+
+  if (book.value && store.user) {
+    const bookId = book.value._id || route.params.id;
+    const id = store.user._id;
+
+    const response = await readerService.addToFavorites({
+      id,
+      bookId,
+    });
+
+    if (response.message) {
+      alert(response.message);
+    }
+  }
+};
+
+const borrowBook = async () => {
+  if (!store.isLoggedIn) {
+    router.push({ name: "login" });
+  }
+  const bookId = book.value._id || route.params.id;
+  console.log("Borrow book: ", book.value.name, bookId);
+};
 
 const onDecrease = () => {
   if (amount.value <= 1) amount.value = 1;
@@ -75,14 +106,17 @@ const onChange = (e) => {
         <div class="flex gap-4 mt-4">
           <h3 class="font-semibold">Tồn kho:</h3>
           <p class="text-[1rem] font-light whitespace-pre-line text-gray-600">
-            {{ 10 }}
+            {{ book.instock || 0 }}
           </p>
         </div>
 
         <!-- Actions -->
-        <div class="mt-4 inline-flex gap-2">
+        <div class="mt-4 inline-flex flex-wrap gap-2">
           <!-- Amount -->
-          <div class="w-36 inline-grid grid-cols-3 gap-[1px] text-white">
+          <div
+            title="Nhập số ngày bạn muốn mượn sách"
+            class="w-36 inline-grid grid-cols-3 gap-[1px] text-white"
+          >
             <ButtonAmount :on-click="onDecrease" classes="rounded-l-md">
               -
             </ButtonAmount>
@@ -102,10 +136,16 @@ const onChange = (e) => {
 
           <!-- Order -->
           <Button
-            :in-stock="true"
-            :on-click="() => console.log(`Borrow book for ${amount} days`)"
-            classes="py-2 px-10"
-            >ĐẶT NGAY</Button
+            :disabled="!book.instock"
+            :on-click="borrowBook"
+            classes="py-3 px-6"
+            >MƯỢN SÁCH</Button
+          >
+          <!-- Favorite -->
+          <Button
+            :on-click="addToFavorite"
+            classes="py-3 px-8 !bg-main !text-white"
+            >YÊU THÍCH</Button
           >
         </div>
       </div>

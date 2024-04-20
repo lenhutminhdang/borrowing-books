@@ -2,20 +2,20 @@
 const props = defineProps(["book"]);
 </script>
 <template>
-  <div class="grid grid-cols-2 gap-10 xl:gap-x-32 gap-y-2 mb-2">
-    <div class="flex justify-between">
+  <div class="grid md:grid-cols-2 gap-x-10 xl:gap-x-32 gap-y-2 mb-2">
+    <div class="flex flex-wrap gap-2 justify-between">
       <h3 class="font-semibold">Tác giả</h3>
       <p class="font-light">{{ book.author }}</p>
     </div>
-    <div class="flex justify-between">
+    <div class="flex flex-wrap gap-2 justify-between">
       <h3 class="font-semibold">Nhà xuất bản</h3>
       <p class="font-light">{{ book.publisherInfo[0].name }}</p>
     </div>
-    <div class="flex justify-between">
+    <div class="flex flex-wrap gap-2 justify-between">
       <h3 class="font-semibold">Năm xuất bản</h3>
       <p class="font-light">{{ book.publicationYear }}</p>
     </div>
-    <div class="flex justify-between">
+    <div class="flex flex-wrap gap-2 justify-between">
       <h3 class="font-semibold">Số quyển</h3>
       <p class="font-light">{{ book.volumeNumber }}</p>
     </div>

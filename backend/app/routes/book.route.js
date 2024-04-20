@@ -4,6 +4,10 @@ const router = express.Router();
 
 router.route("/").get(books.findAll).post(books.create);
 
-router.route("/:id").get(books.findOne).put(books.update).delete(books.delete);
+router
+  .route("/:id")
+  .get(books.findOneFullInfo)
+  .put(books.update)
+  .delete(books.delete);
 
 module.exports = router;

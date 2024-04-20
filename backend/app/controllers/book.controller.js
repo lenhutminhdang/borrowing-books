@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const ApiError = require("../api-error");
 const BookService = require("../services/book.service");
 const MongoDB = require("../utils/mongodb.util");
@@ -48,6 +49,22 @@ exports.findOne = async (req, res, next) => {
   } catch (error) {
     return next(
       new ApiError(500, `Error retrieving book with id=${req.params.id}`)
+    );
+  }
+};
+
+exports.findOneFullInfo = async (req, res, next) => {
+  try {
+    const bookService = new BookService(MongoDB.client);
+    const document = await bookService.findFullInfo(
+      ObjectId.isValid(req.params.id) ? new ObjectId(req.params.id) : null
+    );
+
+    if (!document[0]) return next(new ApiError(404, "book info not found!"));
+    return res.send(document);
+  } catch (error) {
+    return next(
+      new ApiError(500, `Error retrieving book info with id=${req.params.id}`)
     );
   }
 };

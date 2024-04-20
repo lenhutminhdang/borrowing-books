@@ -25,6 +25,10 @@ class ReaderService extends AppService {
     return reader;
   }
 
+  async findByEmail(email) {
+    return await this.Collection.findOne({ email });
+  }
+
   async addToFavorite(readerId, bookIdToAdd) {
     const result = await this.Collection.updateOne(
       { _id: readerId },
@@ -41,6 +45,30 @@ class ReaderService extends AppService {
     );
 
     return result;
+  }
+
+  async findAllFavorites(readerId) {
+    const cursor = await this.Collection.aggregate([
+      {
+        $match: { _id: readerId },
+      },
+      {
+        $lookup: {
+          from: "books", // from books collection
+          localField: "favoriteBooks", // from reader document
+          foreignField: "_id", // from books collection
+          as: "favoriteBooksDetails",
+        },
+      },
+      {
+        $project: {
+          _id: 1, // reader id
+          favoriteBooksDetails: 1, // favorite books
+        },
+      },
+    ]);
+
+    return await cursor.toArray();
   }
 }
 
