@@ -3,11 +3,20 @@ const ApiError = require("../api-error");
 const BorrowingHistoryService = require("../services/borrowing-history.service");
 const MongoDB = require("../utils/mongodb.util");
 
-// Create and Save a new borrowing history
+// Create and Save a new borrowing history (Borrow book feature)
 exports.create = async (req, res, next) => {
+  const { reader, book, borrowDate, dueDate } = req.body;
   try {
     const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
-    const document = await borrowingHistoryService.create(req.body);
+    const document = await borrowingHistoryService.create({
+      reader: ObjectId.isValid(reader) ? new ObjectId(reader) : null,
+      book: ObjectId.isValid(book) ? new ObjectId(book) : null,
+      borrowDate,
+      dueDate,
+      status: "chưa nhận sách",
+    });
+
+    // Cần giảm số lượng sách tồn kho trong books collection
 
     return res.send(document);
   } catch (error) {
@@ -54,6 +63,24 @@ exports.findOne = async (req, res, next) => {
         `Error retrieving borrowing history with id=${req.params.id}`
       )
     );
+  }
+};
+
+exports.findAllHistoryInfoOfReader = async (req, res, next) => {
+  const { readerId } = req.body;
+
+  try {
+    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
+    const historyDoc = await borrowingHistoryService.findAllHistoryInfoOfReader(
+      ObjectId.isValid(readerId) ? new ObjectId(readerId) : null
+    );
+
+    if (!historyDoc)
+      return next(new ApiError(404, "borrowing history not found!"));
+
+    return res.json(historyDoc);
+  } catch (error) {
+    return next(new ApiError(500, `Error retrieving borrowing history`));
   }
 };
 

@@ -25,6 +25,9 @@ class ReaderService {
   async addToFavorites(payload) {
     return (await this.api.post("/favorites", payload)).data;
   }
+  async updateProfile(id, data) {
+    return (await this.api.put(`/${id}`, data)).data;
+  }
 
   // async getAll() {
   //   return (await this.api.get("/")).data;

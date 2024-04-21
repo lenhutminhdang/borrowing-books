@@ -27,7 +27,6 @@ const unfavoriteBook = async (bookId) => {
         (book) => book._id !== bookId
       );
     }
-    alert("Đã xóa sách khỏi danh sách yêu thích");
   }
 };
 
@@ -62,7 +61,7 @@ watchEffect(async () => {
       >
         <router-link
           :to="{ name: 'book-details', params: { id: book._id } }"
-          class="grid items-stretch gap-4"
+          class="grid items-stretch gap-4 outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
         >
           <img
             class="aspect-[9/16] rounded-md object-cover"
@@ -74,7 +73,7 @@ watchEffect(async () => {
         <!-- Favorite Button -->
         <button
           @click="() => unfavoriteBook(book._id)"
-          class="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 rounded-full flex justify-center items-center bg-orange-100 text-main text-2xl"
+          class="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 rounded-full flex justify-center items-center bg-orange-100 text-main text-2xl outline-none outline-offset-0 focus:outline-yellow-400"
         >
           &hearts;
         </button>

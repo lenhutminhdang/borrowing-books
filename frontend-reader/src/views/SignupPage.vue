@@ -1,15 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 import readerService from "../services/reader.service";
 
 import Input from "../components/form/Input.vue";
 import Button from "../components/UI/Button.vue";
 import Link from "../components/UI/Link.vue";
-import { useAuthStore } from "../store";
-import { useRouter } from "vue-router";
 
-const store = useAuthStore();
 const router = useRouter();
 
 const name = ref("");

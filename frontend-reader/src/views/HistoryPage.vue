@@ -1,13 +1,12 @@
 <script setup>
 import { onBeforeMount, ref, watchEffect } from "vue";
-import readerService from "../services/reader.service";
 import { useAuthStore } from "../store";
 import { useRouter } from "vue-router";
+import historyService from "../services/history.service";
 
-const favoriteBooks = ref([]);
-const readerId = ref(null);
 const store = useAuthStore();
 const router = useRouter();
+const histories = ref([]);
 
 onBeforeMount(() => {
   if (!store.isLoggedIn) {
@@ -15,29 +14,15 @@ onBeforeMount(() => {
   }
 });
 
-const unfavoriteBook = async (bookId) => {
-  if (readerId.value && bookId) {
-    const response = await readerService.removeFromFavorites({
-      id: readerId.value,
-      bookId,
+watchEffect(async () => {
+  if (store.isLoggedIn) {
+    const response = await historyService.getAllHistory({
+      readerId: store.user._id,
     });
 
-    if (favoriteBooks.value) {
-      favoriteBooks.value = favoriteBooks.value.filter(
-        (book) => book._id !== bookId
-      );
+    if (response) {
+      histories.value = response;
     }
-    alert("Đã xóa sách khỏi danh sách yêu thích");
-  }
-};
-
-// Fetch favorite books
-watchEffect(async () => {
-  const response = await readerService.getFavoriteBooks();
-
-  if (response) {
-    favoriteBooks.value = response[0].favoriteBooksDetails;
-    readerId.value = response[0]._id;
   }
 });
 </script>
@@ -46,38 +31,52 @@ watchEffect(async () => {
   <main class="text-gray-700">
     <h1 class="text-xl text-gray-600 mb-4">@Lịch sử mượn sách</h1>
     <p
-      v-if="favoriteBooks.length === 0"
+      v-if="histories.length === 0"
       class="text-center text-lg h-[30rem] flex justify-center items-center text-gray-600"
     >
       Danh sách trống...
     </p>
-    <ul
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-12"
-      v-if="favoriteBooks.length > 0"
+
+    <div
+      v-if="histories.length > 0"
+      class="hidden md:grid gap-4 grid-cols-1 md:grid-cols-5 justify-items-start ml-4 py-4 text-lg text-gray-700"
     >
+      <p class="flex items-center">#Bìa</p>
+      <p class="flex items-center">#Tên sách</p>
+      <p class="flex items-center">#Trạng thái</p>
+      <p class="flex items-center">#Ngày đặt</p>
+      <p class="flex items-center">#Ngày trả</p>
+    </div>
+
+    <ul class="flex flex-col gap-6" v-if="histories.length > 0">
       <li
-        v-for="book in favoriteBooks"
-        :key="book._id"
-        class="relative border border-gray-300 rounded-lg p-4"
+        v-for="history in histories"
+        :key="history._id"
+        class="relative h-48 border border-gray-300 rounded-lg p-4"
       >
         <router-link
-          :to="{ name: 'book-details', params: { id: book._id } }"
-          class="grid items-stretch gap-4"
+          :to="{
+            name: 'book-details',
+            params: { id: history.bookInfo[0]._id },
+          }"
+          class="h-full grid grid-cols-2 md:grid-cols-[1fr_4fr] items-stretch gap-4 outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
         >
           <img
-            class="aspect-[9/16] rounded-md object-cover"
-            :src="book.image"
-            :alt="book.name"
+            class="aspect-[9/16] h-full rounded-md object-cover"
+            :src="history.bookInfo[0].image"
+            :alt="history.bookInfo[0].name"
           />
+          <div
+            class="grid gap-4 grid-cols-1 md:grid-cols-4 justify-items-end md:justify-items-start"
+          >
+            <p class="flex items-center">
+              {{ history.bookInfo[0].name }}
+            </p>
+            <p class="flex items-center">{{ history.status }}</p>
+            <p class="flex items-center">{{ history.borrowDate }}</p>
+            <p class="flex items-center">{{ history.dueDate }}</p>
+          </div>
         </router-link>
-
-        <!-- Favorite Button -->
-        <button
-          @click="() => unfavoriteBook(book._id)"
-          class="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 rounded-full flex justify-center items-center bg-orange-100 text-main text-2xl"
-        >
-          &hearts;
-        </button>
       </li>
     </ul>
   </main>

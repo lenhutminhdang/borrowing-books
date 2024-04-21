@@ -3,6 +3,7 @@ import { watchEffect } from "vue";
 import MainHeader from "./components/header/MainHeader.vue";
 import readerService from "./services/reader.service";
 import { useAuthStore } from "./store";
+import Footer from "./components/Footer.vue";
 
 const store = useAuthStore();
 
@@ -18,10 +19,11 @@ watchEffect(async () => {
 <template>
   <div>
     <MainHeader />
-    <div class="px-4 mt-8 mb-16 lg:mx-32 xl:mx-40">
+
+    <div class="min-h-screen px-4 mt-8 mb-16 lg:mx-32 xl:mx-40">
       <router-view />
     </div>
+
+    <Footer />
   </div>
 </template>
-
-<style scoped></style>

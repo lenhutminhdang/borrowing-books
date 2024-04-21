@@ -13,11 +13,11 @@ function toggleMenu() {
 
 <template>
   <nav
-    class="bg-white border border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800 shadow"
+    class="bg-white border border-gray-200 px-2 sm:px-4 py-2.5 rounded shadow"
   >
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <!-- Logo -->
-      <Logo />
+      <Logo @closeMenu="toggleMenu" />
 
       <!-- Mobile menu button -->
       <div class="flex items-center md:hidden">
@@ -29,10 +29,8 @@ function toggleMenu() {
         class="w-full md:block md:w-auto"
         :class="{ hidden: isMenuButtonHidden }"
       >
-        <MainNav />
+        <MainNav @closeMenu="toggleMenu" />
       </div>
     </div>
   </nav>
 </template>
-
-<style></style>

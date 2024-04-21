@@ -3,6 +3,7 @@ import HomePage from "../views/HomePage.vue";
 import HistoryPage from "../views/HistoryPage.vue";
 import FavoritesPage from "../views/FavoritesPage.vue";
 import ProfilePage from "../views/ProfilePage.vue";
+import EditProfilePage from "../views/EditProfilePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import SignupPage from "../views/SignupPage.vue";
 import BookDetailsPage from "../views/BookDetailsPage.vue";
@@ -45,22 +46,15 @@ const routes = [
     component: ProfilePage,
   },
   {
+    path: "/profile/edit",
+    name: "profile-edit",
+    component: EditProfilePage,
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "notfound",
     component: NotFound,
   },
-  // {
-  //   path: "/contacts/:id",
-  //   name: "contact.edit",
-  //   component: ContactEdit,
-  //   props: true,
-  // },
-  // {
-  //   path: "/contacts/create",
-  //   name: "contact.add",
-  //   component: ContactCreate,
-  //   props: true,
-  // },
 ];
 const router = createRouter({
   history: createWebHistory(),

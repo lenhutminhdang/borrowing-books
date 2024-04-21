@@ -2,18 +2,25 @@
 import { ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
+import historyService from "../services/history.service";
 import { formatCurrency } from "../utils/utils";
 import BookInfo from "../components/BookInfo.vue";
 import ButtonAmount from "../components/UI/ButtonAmount.vue";
 import Button from "../components/UI/Button.vue";
+import ModalWrapper from "../components/ModalWrapper.vue";
 import { useAuthStore } from "../store";
 import readerService from "../services/reader.service";
+import { addDays, format } from "date-fns";
+
+const BROWSER_DATE_FORMAT = "yyyy-MM-dd";
 
 const route = useRoute();
 const router = useRouter();
 const store = useAuthStore();
 const book = ref(null);
 const amount = ref(1);
+
+const show = ref(false);
 
 watchEffect(async () => {
   const response = await bookService.get(route.params.id);
@@ -29,14 +36,12 @@ const addToFavorite = async () => {
     const bookId = book.value._id || route.params.id;
     const id = store.user._id;
 
-    const response = await readerService.addToFavorites({
+    await readerService.addToFavorites({
       id,
       bookId,
     });
 
-    if (response.message) {
-      alert(response.message);
-    }
+    router.push({ name: "favorites" });
   }
 };
 
@@ -44,10 +49,47 @@ const borrowBook = async () => {
   if (!store.isLoggedIn) {
     router.push({ name: "login" });
   }
+
   const bookId = book.value._id || route.params.id;
-  console.log("Borrow book: ", book.value.name, bookId);
+  const reader = store.user._id;
+  const borrowDate = format(new Date(), BROWSER_DATE_FORMAT);
+  const dueDate = format(
+    addDays(new Date(), amount.value),
+    BROWSER_DATE_FORMAT
+  );
+
+  if (bookId && reader) {
+    const response = await historyService.borrowBook({
+      book: bookId,
+      reader,
+      borrowDate,
+      dueDate,
+    });
+    // Borrowed successfully
+
+    // Then decrease the amount of book by 1 (book.instock)
+    if (response.insertedId && book.value.instock > 0) {
+      await bookService.update(bookId, {
+        instock: --book.value.instock,
+      });
+    }
+
+    // Show notification here
+    // ...
+  }
 };
 
+// Modal
+const showModal = () => (show.value = true);
+const closeModal = () => (show.value = false);
+
+const agree = () => {
+  borrowBook();
+  console.log("MƯỢN SÁCH THÀNH CÔNG");
+  closeModal();
+};
+
+// Amount Buttons
 const onDecrease = () => {
   if (amount.value <= 1) amount.value = 1;
   else --amount.value;
@@ -137,7 +179,7 @@ const onChange = (e) => {
           <!-- Order -->
           <Button
             :disabled="!book.instock"
-            :on-click="borrowBook"
+            :on-click="showModal"
             classes="py-3 px-6"
             >MƯỢN SÁCH</Button
           >
@@ -150,6 +192,31 @@ const onChange = (e) => {
         </div>
       </div>
     </section>
+
+    <!-- Confirm Modal -->
+    <ModalWrapper :show-modal="show">
+      <template #title> Xác nhận mượn sách? </template>
+
+      <template #content v-if="book">
+        <div>
+          {{ book.name }}
+        </div>
+        <div v-if="book.price > 0">
+          {{ amount }} ngày x {{ formatCurrency(book.price) }} =
+          {{ formatCurrency(amount * book.price) }}
+        </div>
+        <div v-else>Miễn phí</div>
+      </template>
+
+      <template #actions>
+        <Button
+          :on-click="closeModal"
+          classes="py-2 !bg-transparent !text-main border border-main"
+          >Hủy</Button
+        >
+        <Button :on-click="agree" classes="py-2">Đồng ý</Button>
+      </template>
+    </ModalWrapper>
   </main>
 </template>
 

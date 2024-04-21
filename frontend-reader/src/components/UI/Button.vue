@@ -7,7 +7,7 @@ const props = defineProps(["onClick", "classes", "disabled"]);
     @click="onClick"
     :disabled="disabled"
     :class="classes"
-    class="btn-primary disabled:bg-gray-300 disabled:cursor-not-allowed"
+    class="btn-primary disabled:bg-gray-300 disabled:cursor-not-allowed outline-none outline-offset-0 focus:outline-yellow-400"
   >
     <slot />
   </button>

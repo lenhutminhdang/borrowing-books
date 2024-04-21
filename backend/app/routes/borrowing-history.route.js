@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.route("/").get(borrowingHistory.findAll).post(borrowingHistory.create);
 
+router.route("/reader").post(borrowingHistory.findAllHistoryInfoOfReader);
+
 router
   .route("/:id")
   .get(borrowingHistory.findOne)

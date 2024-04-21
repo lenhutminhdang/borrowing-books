@@ -31,6 +31,33 @@ class BorrowingHistoryService extends AppService {
     );
     return result;
   }
+
+  async findAllHistoryInfoOfReader(readerId) {
+    const cursor = await this.Collection.aggregate([
+      {
+        $match: { reader: readerId },
+      },
+      {
+        $lookup: {
+          from: "books", // from books collection
+          localField: "book", // from history document
+          foreignField: "_id", // from books collection
+          as: "bookInfo",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          borrowDate: 1,
+          dueDate: 1,
+          status: 1,
+          bookInfo: 1,
+        },
+      },
+    ]);
+
+    return await cursor.toArray();
+  }
 }
 
 module.exports = BorrowingHistoryService;
