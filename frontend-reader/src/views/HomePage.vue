@@ -24,24 +24,25 @@ watchEffect(async () => {
     <section>
       <h1 class="text-xl text-gray-600 mb-4">@Tất Cả Sách</h1>
       <ul
-        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12"
+        class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-4 sm:gap-y-12"
         v-if="books"
       >
         <li
           v-for="book in books"
           :key="book._id"
-          class="border border-gray-300 rounded-lg p-4"
+          class="sm:border border-gray-300 rounded-lg sm:p-4"
         >
           <router-link
             :to="{ name: 'book-details', params: { id: book._id } }"
-            class="grid grid-cols-2 xl:grid-cols-[4fr_6fr] items-stretch gap-4 group outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[4fr_6fr] sm:items-stretch gap-4 group outline-none outline-offset-0 focus:outline-yellow-400 rounded-md aspect-[9/16] sm:aspect-auto"
           >
             <img
-              class="aspect-[9/16] rounded-md object-cover group-hover:scale-105 transition-transform duration-300"
+              class="h-full sm:h-auto sm:aspect-[9/16] rounded-md object-cover group-hover:scale-105 transition-transform duration-300"
               :src="book.image"
               :alt="book.name"
             />
-            <div class="p-4 rounded-md bg-orange-100">
+
+            <div class="hidden sm:w-auto sm:block p-4 rounded-md bg-orange-100">
               <h2 class="text-xl mb-2 text-gray-800 font-semibold">
                 {{ book.name }}
               </h2>
