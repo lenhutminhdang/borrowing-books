@@ -10,8 +10,8 @@ const books = ref([]);
 const booksPerPage = ref(6);
 const renderedBooks = ref([]);
 
-const changeRenderedBooks = (dataFromPainationView) => {
-  renderedBooks.value = dataFromPainationView;
+const changeRenderedBooks = (dataFromPaginationView) => {
+  renderedBooks.value = dataFromPaginationView;
 };
 
 watchEffect(async () => {
@@ -33,15 +33,7 @@ watchEffect(async () => {
       <h1 class="text-xl text-gray-600 mb-4">@Tất Cả Sách</h1>
       <PaginationView
         v-if="books"
-        :items="[
-          ...books,
-          ...books,
-          ...books,
-          ...books,
-          ...books,
-          ...books,
-          ...books,
-        ]"
+        :items="[...books, ...books, ...books, ...books, ...books, ...books]"
         :itemsPerPage="booksPerPage"
         @renderNewView="changeRenderedBooks"
       >
