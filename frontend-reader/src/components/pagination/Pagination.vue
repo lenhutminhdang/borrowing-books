@@ -122,7 +122,7 @@ const checkIndexForDisplayingNumberButton = (
           <!-- NEXT -->
           <button
             v-if="currentPage < totalPages"
-            @click="emit('changePage', currentPage - 1)"
+            @click="emit('changePage', currentPage + 1)"
             class="pagination-item"
           >
             &gt;

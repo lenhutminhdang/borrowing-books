@@ -5,17 +5,13 @@ import { formatCurrency } from "../utils/utils";
 import Slider from "../components/Slider.vue";
 import PaginationView from "../components/pagination/PaginationView.vue";
 
+// Pagination related
 const books = ref([]);
 const booksPerPage = ref(6);
-const currentPage = ref(1); // start from 1
 const renderedBooks = ref([]);
 
 const changeRenderedBooks = (dataFromPainationView) => {
   renderedBooks.value = dataFromPainationView;
-};
-
-const changeCurrentPage = (newPage) => {
-  currentPage.value = newPage;
 };
 
 watchEffect(async () => {
@@ -47,8 +43,6 @@ watchEffect(async () => {
           ...books,
         ]"
         :itemsPerPage="booksPerPage"
-        :currentPage="currentPage"
-        @changePage="changeCurrentPage"
         @renderNewView="changeRenderedBooks"
       >
         <ul
