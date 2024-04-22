@@ -17,7 +17,7 @@ function toggleMenu() {
   >
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <!-- Logo -->
-      <Logo @closeMenu="toggleMenu" />
+      <Logo @closeMenu="() => (isMenuButtonHidden = true)" />
 
       <!-- Mobile menu button -->
       <div class="flex items-center md:hidden">
