@@ -65,8 +65,8 @@ const borrowBook = async () => {
       borrowDate,
       dueDate,
     });
-    // Borrowed successfully
 
+    // Borrowed successfully
     // Then decrease the amount of book by 1 (book.instock)
     if (response.insertedId && book.value.instock > 0) {
       await bookService.update(bookId, {
@@ -75,13 +75,21 @@ const borrowBook = async () => {
     }
 
     // Show notification here
-    // ...
+    // OR redirect to History Page
+    router.push({ name: "history" });
   }
 };
 
 // Modal
 const showModal = () => (show.value = true);
 const closeModal = () => (show.value = false);
+const checkAuthBeforeShow = () => {
+  if (!store.isLoggedIn) {
+    router.push({ name: "login" });
+  } else {
+    showModal();
+  }
+};
 
 const agree = () => {
   borrowBook();
@@ -179,7 +187,7 @@ const onChange = (e) => {
           <!-- Order -->
           <Button
             :disabled="!book.instock"
-            :on-click="showModal"
+            :on-click="checkAuthBeforeShow"
             classes="py-3 px-6"
             >MƯỢN SÁCH</Button
           >

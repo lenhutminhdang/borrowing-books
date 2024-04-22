@@ -10,9 +10,12 @@ const store = useAuthStore();
 const router = useRouter();
 
 onMounted(() => {
-  if (!store.isLoggedIn) {
-    router.push({ name: "login" });
-  }
+  const timer = setTimeout(() => {
+    if (!store.isLoggedIn) {
+      router.push({ name: "login" });
+    }
+    clearTimeout(timer);
+  }, 300);
 });
 
 const unfavoriteBook = async (bookId) => {

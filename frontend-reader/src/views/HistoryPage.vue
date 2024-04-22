@@ -9,9 +9,12 @@ const router = useRouter();
 const histories = ref([]);
 
 onMounted(() => {
-  if (!store.isLoggedIn) {
-    router.push({ name: "login" });
-  }
+  const timer = setTimeout(() => {
+    if (!store.isLoggedIn) {
+      router.push({ name: "login" });
+    }
+    clearTimeout(timer);
+  }, 300);
 });
 
 watchEffect(async () => {

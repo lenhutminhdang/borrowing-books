@@ -56,8 +56,10 @@ const routes = [
     component: NotFound,
   },
 ];
+
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
 export default router;
