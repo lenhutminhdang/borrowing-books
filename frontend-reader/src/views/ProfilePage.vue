@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import readerService from "../services/reader.service";
 import Button from "../components/UI/Button.vue";
 import EditIcon from "../components/icons/EditIcon.vue";
@@ -11,7 +11,7 @@ const reader = ref(null);
 const store = useAuthStore();
 const router = useRouter();
 
-onBeforeMount(() => {
+onMounted(() => {
   if (!store.isLoggedIn) {
     router.push({ name: "login" });
   }

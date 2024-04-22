@@ -85,7 +85,7 @@ const closeModal = () => (show.value = false);
 
 const agree = () => {
   borrowBook();
-  console.log("MƯỢN SÁCH THÀNH CÔNG");
+
   closeModal();
 };
 

@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { useAuthStore } from "../store";
 import { useRouter } from "vue-router";
 import historyService from "../services/history.service";
@@ -8,7 +8,7 @@ const store = useAuthStore();
 const router = useRouter();
 const histories = ref([]);
 
-onBeforeMount(() => {
+onMounted(() => {
   if (!store.isLoggedIn) {
     router.push({ name: "login" });
   }
