@@ -17,7 +17,7 @@ onMounted(() => {
       router.push({ name: "login" });
     }
     clearTimeout(timer);
-  }, 300);
+  }, 100);
 });
 
 watchEffect(async () => {

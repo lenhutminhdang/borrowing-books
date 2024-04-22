@@ -15,7 +15,7 @@ onMounted(() => {
       router.push({ name: "login" });
     }
     clearTimeout(timer);
-  }, 300);
+  }, 100);
 });
 
 const unfavoriteBook = async (bookId) => {
