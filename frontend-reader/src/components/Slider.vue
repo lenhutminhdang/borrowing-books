@@ -28,6 +28,7 @@ const translate = (itemsPerFrame, baseWidth) => {
     increaseIndexMobile(7);
   }, 3000);
 };
+
 const decreaseIndex = (maxIndex = 3) => {
   currentIndex.value = currentIndex.value - 1;
   if (currentIndex.value === -1) currentIndex.value = maxIndex;
@@ -70,8 +71,8 @@ const increaseIndexMobile = (maxIndex = 7) => {
 <template>
   <section v-if="books.length > 0" class="flex justify-center mb-20">
     <!-- LARGE SCREEN -->
-    <div class="relative hidden lg:block">
-      <div class="overflow-hidden w-[800px] rounded-md">
+    <div class="hidden lg:block">
+      <div class="relative overflow-hidden w-[800px] rounded-md">
         <ul ref="container" class="flex transition-transform duration-300">
           <li v-for="book in books" :key="book._id + '0'" class="shrink-0">
             <router-link
@@ -96,28 +97,30 @@ const increaseIndexMobile = (maxIndex = 7) => {
             </router-link>
           </li>
         </ul>
-      </div>
 
-      <!-- Actions -->
-      <div class="absolute -bottom-16 left-0 w-full flex justify-center gap-4">
-        <button
-          @click="() => decreaseIndex(3)"
-          class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] ml-2"
+        <!-- Actions -->
+        <div
+          class="absolute z-40 top-1/2 left-0 -translate-y-1/2 w-full flex justify-between gap-4"
         >
-          &#129044;
-        </button>
-        <button
-          @click="() => increaseIndex(3)"
-          class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] mr-2"
-        >
-          &#129046;
-        </button>
+          <button
+            @click="() => decreaseIndex(3)"
+            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] ml-2"
+          >
+            &#129044;
+          </button>
+          <button
+            @click="() => increaseIndex(3)"
+            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] mr-2"
+          >
+            &#129046;
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- MOBILE -->
-    <div class="relative block lg:hidden">
-      <div class="overflow-hidden w-[320px] rounded-md">
+    <div class="block lg:hidden">
+      <div class="relative overflow-hidden w-[320px] rounded-md">
         <ul
           ref="containerMobile"
           class="flex transition-transform duration-300"
@@ -145,23 +148,24 @@ const increaseIndexMobile = (maxIndex = 7) => {
             </router-link>
           </li>
         </ul>
-      </div>
 
-      <!-- Actions -->
-      <!-- Actions -->
-      <div class="absolute -bottom-16 left-0 w-full flex justify-center gap-4">
-        <button
-          @click="() => decreaseIndexMobile(7)"
-          class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] ml-2"
+        <!-- Actions -->
+        <div
+          class="absolute top-1/2 left-0 -translate-y-1/2 w-full flex justify-between gap-4"
         >
-          &#129044;
-        </button>
-        <button
-          @click="() => increaseIndexMobile(7)"
-          class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] mr-2"
-        >
-          &#129046;
-        </button>
+          <button
+            @click="() => decreaseIndexMobile(7)"
+            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] ml-2"
+          >
+            &#129044;
+          </button>
+          <button
+            @click="() => increaseIndexMobile(7)"
+            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] mr-2"
+          >
+            &#129046;
+          </button>
+        </div>
       </div>
     </div>
   </section>
