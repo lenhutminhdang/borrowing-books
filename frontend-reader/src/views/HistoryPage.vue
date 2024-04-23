@@ -10,7 +10,6 @@ const router = useRouter();
 const histories = ref([]);
 
 // Pagination related
-const historiesPerPage = ref(3);
 const renderedHistories = ref([]);
 
 const changeRenderedHistories = (dataFromPaginationView) => {
@@ -63,7 +62,7 @@ watchEffect(async () => {
     <PaginationView
       v-if="histories"
       :items="histories"
-      :itemsPerPage="historiesPerPage"
+      :itemsPerPage="3"
       @renderNewView="changeRenderedHistories"
     >
       <ul class="flex flex-col gap-6" v-if="renderedHistories.length > 0">

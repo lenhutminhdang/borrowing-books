@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import bookService from "../services/book.service";
 import { formatCurrency } from "../utils/utils";
 import Slider from "../components/Slider.vue";
@@ -7,7 +7,6 @@ import PaginationView from "../components/pagination/PaginationView.vue";
 
 // Pagination related
 const books = ref([]);
-const booksPerPage = ref(6);
 const renderedBooks = ref([]);
 
 const changeRenderedBooks = (dataFromPaginationView) => {
@@ -20,6 +19,14 @@ watchEffect(async () => {
   if (response) {
     books.value = response;
   }
+});
+
+const TEMP_BOOkS = computed(() => {
+  const arr = [];
+  for (let index = 1; index <= 5; index++) {
+    arr.push(...books.value.map((b) => ({ ...b, _id: b._id + index }))); // make the same id unique
+  }
+  return arr;
 });
 </script>
 
@@ -34,12 +41,12 @@ watchEffect(async () => {
       <h1 class="text-xl text-gray-600 mb-4">@Tất Cả Sách</h1>
       <PaginationView
         v-if="books"
-        :items="[...books, ...books, ...books, ...books, ...books, ...books]"
-        :itemsPerPage="booksPerPage"
+        :items="TEMP_BOOkS"
+        :itemsPerPage="6"
         @renderNewView="changeRenderedBooks"
       >
         <ul
-          class="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
+          class="grid grid-cols-3 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
           v-if="renderedBooks"
         >
           <li

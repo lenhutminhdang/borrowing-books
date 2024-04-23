@@ -11,7 +11,6 @@ const favoriteBooks = ref([]);
 const readerId = ref(null);
 
 // Pagination related
-const favoriteBooksPerPage = ref(12);
 const renderedFavoriteBooks = ref([]);
 
 const changeRenderedFavoriteBooks = (dataFromPaginationView) => {
@@ -65,7 +64,7 @@ watchEffect(async () => {
     <PaginationView
       v-if="favoriteBooks"
       :items="favoriteBooks"
-      :itemsPerPage="favoriteBooksPerPage"
+      :itemsPerPage="12"
       @renderNewView="changeRenderedFavoriteBooks"
     >
       <ul
