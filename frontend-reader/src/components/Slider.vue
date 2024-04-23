@@ -1,167 +1,91 @@
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import Slide from "./Slide.vue";
 
 const props = defineProps({
   books: Array,
 });
 
-const currentIndex = ref(0);
-const currentIndexMobile = ref(0);
-const container = ref(null);
-const containerMobile = ref(null);
+const ITEMS_PER_SLIDE = 8;
+const slides = ref([]);
+const currentSlide = ref(0);
+const slidesContainer = ref();
 
-let interval = setInterval(() => {
-  increaseIndex(3);
+onMounted(() => (slides.value = document.getElementsByClassName("slide")));
 
-  increaseIndexMobile(7);
-}, 3000);
+let interval = setInterval(next, 3000);
 
-const translate = (itemsPerFrame, baseWidth) => {
-  const amount = -currentIndex.value * itemsPerFrame * baseWidth + "px";
-  if (container.value) {
-    container.value.style.transform = `translateX(${amount})`;
-  }
+function next() {
   clearInterval(interval);
-  interval = setInterval(() => {
-    increaseIndex(3);
 
-    increaseIndexMobile(7);
-  }, 3000);
-};
-
-const decreaseIndex = (maxIndex = 3) => {
-  currentIndex.value = currentIndex.value - 1;
-  if (currentIndex.value === -1) currentIndex.value = maxIndex;
-
-  translate(4, 200);
-};
-const increaseIndex = (maxIndex = 3) => {
-  currentIndex.value = currentIndex.value + 1;
-  if (currentIndex.value === maxIndex + 1) currentIndex.value = 0;
-
-  translate(4, 200);
-};
-
-const translateMobile = (itemsPerFrame, baseWidth) => {
-  const amount = -currentIndexMobile.value * itemsPerFrame * baseWidth + "px";
-  if (containerMobile.value) {
-    containerMobile.value.style.transform = `translateX(${amount})`;
+  if (currentSlide.value === slides.value.length - 1) {
+    currentSlide.value = 0;
+  } else {
+    currentSlide.value++;
   }
+  interval = setInterval(next, 3000);
+}
+
+function prev() {
   clearInterval(interval);
-  interval = setInterval(() => {
-    increaseIndex(3);
 
-    increaseIndexMobile(7);
-  }, 3000);
-};
-const decreaseIndexMobile = (maxIndex = 7) => {
-  currentIndexMobile.value = currentIndexMobile.value - 1;
-  if (currentIndexMobile.value === -1) currentIndexMobile.value = maxIndex;
+  if (currentSlide.value === 0) {
+    currentSlide.value = slides.value.length - 1;
+  } else {
+    currentSlide.value--;
+  }
 
-  translateMobile(2, 160);
-};
-const increaseIndexMobile = (maxIndex = 7) => {
-  currentIndexMobile.value = currentIndexMobile.value + 1;
-  if (currentIndexMobile.value === maxIndex + 1) currentIndexMobile.value = 0;
+  interval = setInterval(next, 3000);
+}
 
-  translateMobile(2, 160);
-};
+const tempBooks = computed(() => {
+  const arr = [];
+  for (let i = 0; i < 3; i++) {
+    arr.push(
+      [
+        ...props.books,
+        ...props.books,
+        ...props.books,
+        ...props.books,
+        ...props.books,
+      ].slice(i * ITEMS_PER_SLIDE, (i + 1) * ITEMS_PER_SLIDE)
+    );
+  }
+  return arr;
+});
 </script>
 
 <template>
   <section v-if="books.length > 0" class="flex justify-center mb-20">
     <!-- LARGE SCREEN -->
-    <div class="hidden lg:block">
-      <div class="relative overflow-hidden w-[800px] rounded-md">
-        <ul ref="container" class="flex transition-transform duration-300">
-          <li v-for="book in books" :key="book._id + '0'" class="shrink-0">
-            <router-link
-              :to="{ name: 'book-details', params: { id: book._id } }"
-            >
-              <img
-                :src="book.image"
-                :alt="book.name"
-                class="aspect-[9/16] w-[200px] h-full object-cover transition-transform duration-200 ease-in-out"
-              />
-            </router-link>
-          </li>
-          <li v-for="book in books" :key="book._id + '1'" class="shrink-0">
-            <router-link
-              :to="{ name: 'book-details', params: { id: book._id } }"
-            >
-              <img
-                :src="book.image"
-                :alt="book.name"
-                class="aspect-[9/16] w-[200px] h-full object-cover transition-transform duration-200 ease-in-out"
-              />
-            </router-link>
-          </li>
-        </ul>
+    <div>
+      <div class="relative overflow-hidden rounded-md">
+        <div
+          ref="slidesContainer"
+          class="slide-container flex h-[13rem] sm:h-[50rem] md:h-[30rem] lg:h-[16rem] xl:h-[18rem]"
+        >
+          <!-- Slide # -->
+          <Slide
+            v-for="(list, index) in tempBooks"
+            :key="list._id"
+            :list="list"
+            :isActive="currentSlide === index"
+          />
+        </div>
 
         <!-- Actions -->
         <div
           class="absolute z-40 top-1/2 left-0 -translate-y-1/2 w-full flex justify-between gap-4"
         >
           <button
-            @click="() => decreaseIndex(3)"
+            @click="() => prev()"
             class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] ml-2"
           >
             &#129044;
           </button>
           <button
-            @click="() => increaseIndex(3)"
+            @click="() => next()"
             class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] mr-2"
-          >
-            &#129046;
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MOBILE -->
-    <div class="block lg:hidden">
-      <div class="relative overflow-hidden w-[320px] rounded-md">
-        <ul
-          ref="containerMobile"
-          class="flex transition-transform duration-300"
-        >
-          <li v-for="book in books" :key="book._id + '0'" class="shrink-0">
-            <router-link
-              :to="{ name: 'book-details', params: { id: book._id } }"
-            >
-              <img
-                :src="book.image"
-                :alt="book.name"
-                class="aspect-[9/16] w-[160px] h-full object-cover transition-transform duration-200 ease-in-out"
-              />
-            </router-link>
-          </li>
-          <li v-for="book in books" :key="book._id + '1'" class="shrink-0">
-            <router-link
-              :to="{ name: 'book-details', params: { id: book._id } }"
-            >
-              <img
-                :src="book.image"
-                :alt="book.name"
-                class="aspect-[9/16] w-[160px] h-full object-cover transition-transform duration-200 ease-in-out"
-              />
-            </router-link>
-          </li>
-        </ul>
-
-        <!-- Actions -->
-        <div
-          class="absolute top-1/2 left-0 -translate-y-1/2 w-full flex justify-between gap-4"
-        >
-          <button
-            @click="() => decreaseIndexMobile(7)"
-            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] ml-2"
-          >
-            &#129044;
-          </button>
-          <button
-            @click="() => increaseIndexMobile(7)"
-            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(200,200,200,0.7)] mr-2"
           >
             &#129046;
           </button>
@@ -170,3 +94,36 @@ const increaseIndexMobile = (maxIndex = 7) => {
     </div>
   </section>
 </template>
+
+<style scoped>
+@media screen and (min-width: 500px) {
+  .slide-container {
+    height: 15rem;
+  }
+}
+@media screen and (min-width: 570px) {
+  .slide-container {
+    height: 20rem;
+  }
+}
+@media screen and (min-width: 760px) {
+  .slide-container {
+    height: 14rem;
+  }
+}
+@media screen and (min-width: 1300px) {
+  .slide-container {
+    height: 16rem;
+  }
+}
+@media screen and (min-width: 1500px) {
+  .slide-container {
+    height: 18rem;
+  }
+}
+@media screen and (min-width: 1645px) {
+  .slide-container {
+    height: 22rem;
+  }
+}
+</style>

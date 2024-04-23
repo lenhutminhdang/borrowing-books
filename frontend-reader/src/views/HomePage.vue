@@ -26,7 +26,8 @@ watchEffect(async () => {
 <template>
   <main class="text-gray-700">
     <!-- Slider -->
-    <Slider v-if="books" :books="books?.slice(0, 8) || []" />
+    <!-- <Slider v-if="books" :books="books?.slice(0, 8) || []" /> -->
+    <Slider v-if="books" :books="books" />
 
     <!-- Section all books -->
     <section>
