@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  list: Array,
+  slide: Array,
   isActive: Boolean,
 });
 </script>
@@ -11,7 +11,7 @@ const props = defineProps({
     :class="{ 'w-0': !isActive, 'w-full': isActive }"
   >
     <router-link
-      v-for="(item, index) in list"
+      v-for="(item, index) in slide"
       :class="{ hidden: index % 2 !== 0, 'md:inline-block': true }"
       :key="item._id"
       :to="{ name: 'book-details', params: { id: item._id } }"

@@ -1,24 +1,22 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import Slide from "./Slide.vue";
 
 const props = defineProps({
   books: Array,
 });
 
+const NUMBER_OF_SLIDES = 4;
 const ITEMS_PER_SLIDE = 8;
-const slides = ref([]);
-const currentSlide = ref(0);
-const slidesContainer = ref();
 
-onMounted(() => (slides.value = document.getElementsByClassName("slide")));
+const currentSlide = ref(0);
 
 let interval = setInterval(next, 3000);
 
 function next() {
   clearInterval(interval);
 
-  if (currentSlide.value === slides.value.length - 1) {
+  if (currentSlide.value === NUMBER_OF_SLIDES - 1) {
     currentSlide.value = 0;
   } else {
     currentSlide.value++;
@@ -30,7 +28,7 @@ function prev() {
   clearInterval(interval);
 
   if (currentSlide.value === 0) {
-    currentSlide.value = slides.value.length - 1;
+    currentSlide.value = NUMBER_OF_SLIDES - 1;
   } else {
     currentSlide.value--;
   }
@@ -38,11 +36,12 @@ function prev() {
   interval = setInterval(next, 3000);
 }
 
-const tempBooks = computed(() => {
+const slides = computed(() => {
   const arr = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < NUMBER_OF_SLIDES; i++) {
     arr.push(
       [
+        ...props.books,
         ...props.books,
         ...props.books,
         ...props.books,
@@ -60,15 +59,12 @@ const tempBooks = computed(() => {
     <!-- LARGE SCREEN -->
     <div>
       <div class="relative overflow-hidden rounded-md">
-        <div
-          ref="slidesContainer"
-          class="slide-container flex h-[13rem] sm:h-[50rem] md:h-[30rem] lg:h-[16rem] xl:h-[18rem]"
-        >
+        <div class="slide-container flex h-[13rem] sm:h-[50rem]">
           <!-- Slide # -->
           <Slide
-            v-for="(list, index) in tempBooks"
-            :key="list._id"
-            :list="list"
+            v-for="(slide, index) in slides"
+            :key="slide._id"
+            :slide="slide"
             :isActive="currentSlide === index"
           />
         </div>
