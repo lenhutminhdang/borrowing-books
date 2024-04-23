@@ -29,7 +29,7 @@ function toggleMenu() {
         class="w-full md:block md:w-auto"
         :class="{ hidden: isMenuButtonHidden }"
       >
-        <MainNav @closeMenu="toggleMenu" />
+        <MainNav @closeMenu="() => (isMenuButtonHidden = true)" />
       </div>
     </div>
   </nav>

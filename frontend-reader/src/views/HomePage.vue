@@ -24,7 +24,7 @@ watchEffect(async () => {
 const TEMP_BOOkS = computed(() => {
   const arr = [];
   for (let index = 1; index <= 5; index++) {
-    arr.push(...books.value.map((b) => ({ ...b, _id: b._id + index }))); // make the same id unique
+    arr.push(...books.value);
   }
   return arr;
 });
