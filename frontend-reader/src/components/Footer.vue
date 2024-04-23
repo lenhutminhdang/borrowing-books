@@ -1,6 +1,8 @@
 <script setup></script>
 <template>
-  <footer class="w-full px-4 py-8 border-t-2 text-center">
+  <footer
+    class="w-full px-4 py-8 border-t-2 text-center bg-white border-gray-200 shadow"
+  >
     <a
       href="https://github.com/lenhutminhdang/borrowing-books"
       target="_blank"
