@@ -7,6 +7,7 @@ import EditProfilePage from "../views/EditProfilePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import SignupPage from "../views/SignupPage.vue";
 import BookDetailsPage from "../views/BookDetailsPage.vue";
+import SearchPage from "../views/SearchPage.vue";
 import NotFound from "../views/NotFound.vue";
 
 const routes = [
@@ -49,6 +50,11 @@ const routes = [
     path: "/profile/edit",
     name: "profile-edit",
     component: EditProfilePage,
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: SearchPage,
   },
   {
     path: "/:pathMatch(.*)*",

@@ -12,6 +12,9 @@ const store = useAuthStore();
       <Link route-name="home">Trang chủ</Link>
     </li>
     <li @click="$emit('closeMenu')">
+      <Link route-name="search">Tìm kiếm</Link>
+    </li>
+    <li @click="$emit('closeMenu')">
       <Link route-name="history">Lịch sử</Link>
     </li>
     <li @click="$emit('closeMenu')">

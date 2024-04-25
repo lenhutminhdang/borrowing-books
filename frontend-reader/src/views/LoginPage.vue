@@ -2,38 +2,51 @@
 import { ref } from "vue";
 
 import readerService from "../services/reader.service";
+import { useAuthStore } from "../store";
+import { useRouter } from "vue-router";
 
 import Input from "../components/form/Input.vue";
 import Button from "../components/UI/Button.vue";
 import Link from "../components/UI/Link.vue";
-import { useAuthStore } from "../store";
-import { useRouter } from "vue-router";
-
-const email = ref("");
-const password = ref("");
+import ModalWrapper from "../components/ModalWrapper.vue";
 
 const store = useAuthStore();
 const router = useRouter();
 
+const email = ref("");
+const password = ref("");
+
+const modalTitle = ref("");
+const show = ref(false);
+const showModal = () => (show.value = true);
+const closeModal = () => (show.value = false);
+
 // Login
 const handleSubmit = async () => {
   if (password.value.length < 6) {
-    alert("Độ dài mật khẩu phải lớn hơn hoặc bằng 6.");
+    modalTitle.value = "Độ dài mật khẩu phải lớn hơn hoặc bằng 6.";
+    showModal();
     return;
   }
 
   if (email.value === "" || password.value === "") {
-    alert("Vui lòng điền đầy đủ thông tin.");
+    modalTitle.value = "Vui lòng điền đầy đủ thông tin.";
+    showModal();
     return;
   }
 
-  const user = await readerService.login({
-    email: email.value,
-    password: password.value,
-  });
-  if (user._id) {
-    store.login(user);
-    router.push({ name: "home" });
+  try {
+    const user = await readerService.login({
+      email: email.value,
+      password: password.value,
+    });
+    if (user._id) {
+      store.login(user);
+      router.push({ name: "home" });
+    }
+  } catch (error) {
+    modalTitle.value = "Đăng nhập thất bại, vui lòng thử lại sau!";
+    showModal();
   }
 };
 </script>
@@ -65,5 +78,15 @@ const handleSubmit = async () => {
         <Link route-name="signup" classes="!text-main">Đăng ký ngay</Link>
       </p>
     </div>
+
+    <!-- Modal -->
+    <ModalWrapper :show-modal="show">
+      <template #title> {{ modalTitle }} </template>
+
+      <template #actions>
+        <div></div>
+        <Button :on-click="closeModal" classes="grow py-2">OK</Button>
+      </template>
+    </ModalWrapper>
   </main>
 </template>

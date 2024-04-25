@@ -28,7 +28,7 @@ class AppService {
 
   async findByName(name) {
     return await this.find({
-      name: { $regex: new RegExp(name), $option: "i" },
+      name: { $regex: name, $options: "i" },
     });
   }
 

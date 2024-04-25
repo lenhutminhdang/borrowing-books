@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.route("/").get(books.findAll).post(books.create);
 
+router.route("/search").get(books.findByName);
+
 router
   .route("/:id")
   .get(books.findOneFullInfo)

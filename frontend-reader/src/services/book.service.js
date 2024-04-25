@@ -4,23 +4,21 @@ class BookService {
   constructor(baseUrl = "http://localhost:3000/api/books") {
     this.api = createApiClient(baseUrl);
   }
+
   async getAll() {
     return (await this.api.get("/")).data;
   }
-  // async create(data) {
-  //   return (await this.api.post("/", data)).data;
-  // }
-  // async deleteAll() {
-  //   return (await this.api.delete("/")).data;
-  // }
+
+  async findByName(searchTerm) {
+    return (await this.api.get(`/search?q=${searchTerm}`)).data;
+  }
+
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
   }
+
   async update(id, payload) {
     return (await this.api.put(`/${id}`, payload)).data;
   }
-  // async delete(id) {
-  //   return (await this.api.delete(`/${id}`)).data;
-  // }
 }
 export default new BookService();

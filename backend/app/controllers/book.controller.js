@@ -53,6 +53,20 @@ exports.findOne = async (req, res, next) => {
   }
 };
 
+exports.findByName = async (req, res, next) => {
+  const searchTerm = req.query.q;
+
+  try {
+    const bookService = new BookService(MongoDB.client);
+    const document = await bookService.findByName(searchTerm);
+
+    if (!document) return next(new ApiError(404, "book not found!"));
+    return res.json(document);
+  } catch (error) {
+    return next(new ApiError(500, `Error searching books`));
+  }
+};
+
 exports.findOneFullInfo = async (req, res, next) => {
   try {
     const bookService = new BookService(MongoDB.client);

@@ -7,6 +7,7 @@ import readerService from "../services/reader.service";
 import Input from "../components/form/Input.vue";
 import Button from "../components/UI/Button.vue";
 import Link from "../components/UI/Link.vue";
+import ModalWrapper from "../components/ModalWrapper.vue";
 
 const router = useRouter();
 
@@ -14,14 +15,21 @@ const name = ref("");
 const email = ref("");
 const password = ref("");
 
+const modalTitle = ref("");
+const show = ref(false);
+const showModal = () => (show.value = true);
+const closeModal = () => (show.value = false);
+
 const handleSubmit = async () => {
   if (password.value.length < 6) {
-    alert("Độ dài mật khẩu phải lớn hơn hoặc bằng 6.");
+    modalTitle.value = "Độ dài mật khẩu phải lớn hơn hoặc bằng 6.";
+    showModal();
     return;
   }
 
   if (name.value === "" || email.value === "" || password.value === "") {
-    alert("Vui lòng điền đầy đủ thông tin.");
+    modalTitle.value = "Vui lòng điền đầy đủ thông tin.";
+    showModal();
     return;
   }
 
@@ -34,7 +42,6 @@ const handleSubmit = async () => {
   // Create account sucess
   if (response.insertedId) {
     router.push({ name: "login" });
-    alert("Đăng ký tài khoản thành công, đăng nhập ngay!");
   }
 };
 </script>
@@ -73,5 +80,15 @@ const handleSubmit = async () => {
         <Link route-name="login" classes="!text-main">Đăng nhập ngay</Link>
       </p>
     </div>
+
+    <!-- Modal -->
+    <ModalWrapper :show-modal="show">
+      <template #title> {{ modalTitle }} </template>
+
+      <template #actions>
+        <div></div>
+        <Button :on-click="closeModal" classes="grow py-2">OK</Button>
+      </template>
+    </ModalWrapper>
   </main>
 </template>
