@@ -3,7 +3,7 @@ import { onMounted, ref, watchEffect } from "vue";
 import { useAuthStore } from "../store";
 import { useRouter } from "vue-router";
 import historyService from "../services/history.service";
-import PaginationView from "../components/pagination/PaginationView.vue";
+import Pagination from "../components/pagination/Pagination.vue";
 
 const store = useAuthStore();
 const router = useRouter();
@@ -12,8 +12,8 @@ const histories = ref([]);
 // Pagination related
 const renderedHistories = ref([]);
 
-const changeRenderedHistories = (dataFromPaginationView) => {
-  renderedHistories.value = dataFromPaginationView;
+const fetchNewHistories = (dataFromPagination) => {
+  renderedHistories.value = dataFromPagination;
 };
 
 onMounted(() => {
@@ -59,41 +59,40 @@ watchEffect(async () => {
       <p class="flex items-center">#Ngày trả</p>
     </div>
 
-    <PaginationView
+    <ul class="flex flex-col gap-6" v-if="renderedHistories.length > 0">
+      <li
+        v-for="history in renderedHistories"
+        :key="history._id"
+        class="relative h-auto border border-gray-300 rounded-lg p-4"
+      >
+        <router-link
+          :to="{
+            name: 'book-details',
+            params: { id: history.bookInfo[0]._id },
+          }"
+          class="md:h-32 grid grid-cols-[1.5fr_3.5fr] md:grid-cols-[1fr_4fr] items-stretch gap-4 outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
+        >
+          <img
+            class="aspect-[9/16] h-full rounded-md object-cover"
+            :src="history.bookInfo[0].image"
+            :alt="history.bookInfo[0].name"
+          />
+          <div class="flex gap-4 flex-col md:grid md:grid-cols-4">
+            <p class="flex items-center">
+              {{ history.bookInfo[0].name }}
+            </p>
+            <p class="flex items-center">{{ history.status }}</p>
+            <p class="flex items-center">{{ history.borrowDate }}</p>
+            <p class="flex items-center">{{ history.dueDate }}</p>
+          </div>
+        </router-link>
+      </li>
+    </ul>
+    <Pagination
       v-if="histories"
       :items="histories"
       :itemsPerPage="3"
-      @renderNewView="changeRenderedHistories"
-    >
-      <ul class="flex flex-col gap-6" v-if="renderedHistories.length > 0">
-        <li
-          v-for="history in renderedHistories"
-          :key="history._id"
-          class="relative h-auto border border-gray-300 rounded-lg p-4"
-        >
-          <router-link
-            :to="{
-              name: 'book-details',
-              params: { id: history.bookInfo[0]._id },
-            }"
-            class="md:h-32 grid grid-cols-[1.5fr_3.5fr] md:grid-cols-[1fr_4fr] items-stretch gap-4 outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
-          >
-            <img
-              class="aspect-[9/16] h-full rounded-md object-cover"
-              :src="history.bookInfo[0].image"
-              :alt="history.bookInfo[0].name"
-            />
-            <div class="flex gap-4 flex-col md:grid md:grid-cols-4">
-              <p class="flex items-center">
-                {{ history.bookInfo[0].name }}
-              </p>
-              <p class="flex items-center">{{ history.status }}</p>
-              <p class="flex items-center">{{ history.borrowDate }}</p>
-              <p class="flex items-center">{{ history.dueDate }}</p>
-            </div>
-          </router-link>
-        </li>
-      </ul>
-    </PaginationView>
+      @renderNewItems="fetchNewHistories"
+    />
   </main>
 </template>
