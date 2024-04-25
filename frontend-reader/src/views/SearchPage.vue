@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import bookService from "../services/book.service";
 import Button from "../components/UI/Button.vue";
 import Input from "../components/form/Input.vue";
@@ -8,7 +8,7 @@ import SearchIcon from "../components/icons/SearchIcon.vue";
 const searchResults = ref([]);
 const searchTerm = ref("");
 
-const handleSubmit = async () => {
+const fetchData = async () => {
   try {
     const response = await bookService.findByName(searchTerm.value);
 
@@ -17,18 +17,40 @@ const handleSubmit = async () => {
     console.log(error);
   }
 };
+
+const handleChange = (e) => {
+  searchTerm.value = e.target.value;
+};
+
+function createDebounce() {
+  let timer;
+  return function (fn, delay = 500) {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      fn();
+    }, delay);
+  };
+}
+
+const debounce = createDebounce();
+
+watch(searchTerm, () => {
+  debounce(fetchData);
+});
 </script>
 
 <template>
   <main class="text-gray-700">
     <section class="md:mx-20 xl:mx-40">
-      <form @submit.prevent="handleSubmit" class="flex justify-center">
+      <form @submit.prevent="fetchData" class="flex justify-center">
         <Input
           type="text"
           name="text"
           classes="grow !bg-white !border !border-r-0 border-gray-300 !outline-none !rounded-l-full"
           placeholder="Nhập tên sách..."
           v-model="searchTerm"
+          :onChange="handleChange"
         />
 
         <button
