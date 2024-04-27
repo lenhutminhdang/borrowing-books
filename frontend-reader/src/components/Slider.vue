@@ -70,18 +70,16 @@ const slides = computed(() => {
         </div>
 
         <!-- Actions -->
-        <div
-          class="absolute z-40 top-1/2 left-0 -translate-y-1/2 w-full flex justify-between gap-4"
-        >
+        <div>
           <button
             @click="prev"
-            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] ml-2"
+            class="absolute z-40 top-1/2 left-0 -translate-y-1/2 flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] ml-2"
           >
             &#129044;
           </button>
           <button
             @click="next"
-            class="flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] mr-2"
+            class="absolute z-40 top-1/2 right-0 -translate-y-1/2 flex justify-center items-center size-12 rounded-full text-xl bg-[rgba(234,234,234,0.8)] mr-2"
           >
             &#129046;
           </button>
