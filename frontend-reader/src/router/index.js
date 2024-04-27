@@ -16,46 +16,80 @@ const routes = [
     name: "home",
     component: HomePage,
   },
+
   {
-    path: "/books/:id",
-    name: "book-details",
-    component: BookDetailsPage,
+    path: "/home",
+    redirect: { name: "home" },
   },
+
+  {
+    path: "/books",
+    children: [
+      {
+        path: "",
+        redirect: { name: "home" },
+      },
+
+      {
+        path: "search",
+        name: "search",
+        component: SearchPage,
+      },
+
+      {
+        path: ":id",
+        name: "book-details",
+        component: BookDetailsPage,
+      },
+    ],
+  },
+
   {
     path: "/login",
     name: "login",
     component: LoginPage,
   },
+
   {
     path: "/signup",
     name: "signup",
     component: SignupPage,
   },
+
   {
     path: "/history",
     name: "history",
     component: HistoryPage,
   },
+
   {
     path: "/favorites",
     name: "favorites",
     component: FavoritesPage,
   },
+
   {
     path: "/profile",
-    name: "profile",
-    component: ProfilePage,
+    children: [
+      {
+        path: "",
+        name: "profile",
+        component: ProfilePage,
+      },
+
+      {
+        path: "edit",
+        name: "profile-edit",
+        component: EditProfilePage,
+      },
+    ],
   },
+
   {
-    path: "/profile/edit",
-    name: "profile-edit",
-    component: EditProfilePage,
+    path: "/account",
+    redirect: { name: "profile" },
   },
-  {
-    path: "/search",
-    name: "search",
-    component: SearchPage,
-  },
+
   {
     path: "/:pathMatch(.*)*",
     name: "notfound",
