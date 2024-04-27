@@ -5,11 +5,10 @@ import { formatCurrency } from "../utils/utils";
 import Slider from "../components/Slider.vue";
 import Pagination from "../components/pagination/Pagination.vue";
 
-// Pagination related
 const books = ref([]);
 const renderedBooks = ref([]);
 
-const fetchNewBooks = (dataFromPagination) => {
+const renderNewBooks = (dataFromPagination) => {
   renderedBooks.value = dataFromPagination;
 };
 
@@ -78,7 +77,7 @@ const TEMP_BOOkS = computed(() => {
         v-if="books"
         :items="TEMP_BOOkS"
         :itemsPerPage="6"
-        @renderNewItems="fetchNewBooks"
+        @renderNewItems="renderNewBooks"
       />
     </section>
   </main>

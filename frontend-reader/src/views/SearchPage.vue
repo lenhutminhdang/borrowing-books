@@ -20,7 +20,7 @@ const fetchData = async () => {
   }
 };
 
-const fetchNewSearchResults = (dataFromPagination) => {
+const renderNewSearchResults = (dataFromPagination) => {
   renderedSearchResults.value = dataFromPagination;
 };
 
@@ -97,7 +97,7 @@ watch(searchTerm, () => {
           v-if="searchResults"
           :items="searchResults"
           :itemsPerPage="5"
-          @renderNewItems="fetchNewSearchResults"
+          @renderNewItems="renderNewSearchResults"
         />
       </div>
       <p

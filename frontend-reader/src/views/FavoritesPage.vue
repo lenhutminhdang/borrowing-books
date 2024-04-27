@@ -9,11 +9,9 @@ const store = useAuthStore();
 const router = useRouter();
 const favoriteBooks = ref([]);
 const readerId = ref(null);
-
-// Pagination related
 const renderedFavoriteBooks = ref([]);
 
-const fetchNewFavoriteBooks = (dataFromPagination) => {
+const renderNewFavoriteBooks = (dataFromPagination) => {
   renderedFavoriteBooks.value = dataFromPagination;
 };
 
@@ -95,7 +93,7 @@ watchEffect(async () => {
       v-if="favoriteBooks"
       :items="favoriteBooks"
       :itemsPerPage="12"
-      @renderNewItems="fetchNewFavoriteBooks"
+      @renderNewItems="renderNewFavoriteBooks"
     />
   </main>
 </template>

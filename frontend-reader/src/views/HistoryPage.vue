@@ -8,11 +8,9 @@ import Pagination from "../components/pagination/Pagination.vue";
 const store = useAuthStore();
 const router = useRouter();
 const histories = ref([]);
-
-// Pagination related
 const renderedHistories = ref([]);
 
-const fetchNewHistories = (dataFromPagination) => {
+const renderNewHistories = (dataFromPagination) => {
   renderedHistories.value = dataFromPagination;
 };
 
@@ -92,7 +90,7 @@ watchEffect(async () => {
       v-if="histories"
       :items="histories"
       :itemsPerPage="3"
-      @renderNewItems="fetchNewHistories"
+      @renderNewItems="renderNewHistories"
     />
   </main>
 </template>
