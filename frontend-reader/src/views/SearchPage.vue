@@ -4,9 +4,11 @@ import bookService from "../services/book.service";
 import Button from "../components/UI/Button.vue";
 import Input from "../components/form/Input.vue";
 import SearchIcon from "../components/icons/SearchIcon.vue";
+import Pagination from "../components/pagination/Pagination.vue";
 
 const searchResults = ref([]);
 const searchTerm = ref("");
+const renderedSearchResults = ref([]);
 
 const fetchData = async () => {
   try {
@@ -16,6 +18,10 @@ const fetchData = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const fetchNewSearchResults = (dataFromPagination) => {
+  renderedSearchResults.value = dataFromPagination;
 };
 
 const handleChange = (e) => {
@@ -61,31 +67,39 @@ watch(searchTerm, () => {
       </form>
 
       <!-- Search Results -->
-      <ul
-        v-if="searchResults.length > 0"
-        class="max-h-[18rem] flex flex-col mt-4 bg-white border border-gray-300 rounded-md overflow-y-scroll"
-      >
-        <li v-for="book in searchResults" :key="book._id">
-          <router-link
-            :to="{ name: 'book-details', params: { id: book._id } }"
-            class="flex gap-x-3 p-4 bg-yellow-50 hover:bg-yellow-100"
-          >
-            <img
-              :src="book.image"
-              :alt="book.name"
-              class="w-10 h-[16] object-cover rounded-[0.2rem]"
-            />
-            <div>
-              <p class="font-semibold">
-                {{ book.name }}
-              </p>
-              <p class="text-sm italic text-gray-600">
-                {{ book.author }}
-              </p>
-            </div>
-          </router-link>
-        </li>
-      </ul>
+      <div>
+        <ul
+          v-if="renderedSearchResults.length > 0"
+          class="flex flex-col mt-4 bg-white border border-gray-300 rounded-md"
+        >
+          <li v-for="book in renderedSearchResults" :key="book._id">
+            <router-link
+              :to="{ name: 'book-details', params: { id: book._id } }"
+              class="flex gap-x-3 p-4 bg-yellow-50 hover:bg-yellow-100"
+            >
+              <img
+                :src="book.image"
+                :alt="book.name"
+                class="w-10 h-[16] object-cover rounded-[0.2rem]"
+              />
+              <div>
+                <p class="font-semibold">
+                  {{ book.name }}
+                </p>
+                <p class="text-sm italic text-gray-600">
+                  {{ book.author }}
+                </p>
+              </div>
+            </router-link>
+          </li>
+        </ul>
+        <Pagination
+          v-if="searchResults"
+          :items="searchResults"
+          :itemsPerPage="5"
+          @renderNewItems="fetchNewSearchResults"
+        />
+      </div>
       <p
         v-if="searchResults.length === 0 && searchTerm !== ''"
         class="text-center mt-10"
