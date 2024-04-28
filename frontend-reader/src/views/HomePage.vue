@@ -50,7 +50,7 @@ const TEMP_BOOkS = computed(() => {
         >
           <router-link
             :to="{ name: 'book-details', params: { id: book._id } }"
-            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[4fr_6fr] sm:items-stretch gap-4 group outline-none outline-offset-0 focus:outline-yellow-400 rounded-md aspect-[9/16] sm:aspect-auto"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[4fr_6fr] sm:items-stretch gap-4 h-full group outline-none outline-offset-0 focus:outline-yellow-400 rounded-md aspect-[9/16] sm:aspect-auto"
           >
             <img
               class="h-full sm:h-auto sm:aspect-[9/16] rounded-md object-cover group-hover:scale-105 transition-transform duration-300"
@@ -59,12 +59,12 @@ const TEMP_BOOkS = computed(() => {
             />
 
             <div class="hidden sm:w-auto sm:block p-4 rounded-md bg-orange-100">
-              <h2 class="text-xl mb-2 text-gray-800 font-semibold">
+              <h2 class="text-xl sm:text-lg mb-2 text-gray-800 font-semibold">
                 {{ book.name }}
               </h2>
-              <p class="mb-2">{{ book.author }}</p>
-              <p class="mt-auto">
-                <span class="text-yellow-500 text-xl">{{
+              <p class="mb-2 sm:text-sm">{{ book.author }}</p>
+              <p class="mt-auto whitespace-nowrap">
+                <span class="text-yellow-500 text-xl sm:text-base">{{
                   book.price > 0 ? formatCurrency(book.price) : "Miễn phí"
                 }}</span>
                 <span v-if="book.price > 0">/ngày</span>
