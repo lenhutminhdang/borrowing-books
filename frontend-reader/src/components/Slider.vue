@@ -102,6 +102,11 @@ const slides = computed(() => {
 }
 @media screen and (min-width: 760px) {
   .slide-container {
+    height: 22rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .slide-container {
     height: 14rem;
   }
 }
