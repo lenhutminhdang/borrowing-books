@@ -236,10 +236,10 @@ const onChange = (e) => {
       :class="{ '-bottom-[105%]': !showPublisher }"
     >
       <div
-        class="flex flex-col md:flex-row gap-6 items-start w-full h-full p-6 bg-gray-100 rounded-t-[2rem]"
+        class="relative flex flex-col md:flex-row gap-6 items-start w-full h-full p-6 bg-gray-100 rounded-t-[2rem]"
       >
         <div class="shrink-0 flex items-center gap-6">
-          <figure class="shrink-0 w-56 rounded-2xl overflow-hidden">
+          <figure class="shrink-0 w-40 sm:w-56 rounded-2xl overflow-hidden">
             <img
               :src="publisher.logo"
               :alt="publisher.name"
@@ -258,43 +258,48 @@ const onChange = (e) => {
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-24 gap-y-2">
             <div class="flex flex-col gap-2">
-              <div class="grid grid-cols-[1fr_2.5fr] gap-16">
+              <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
                 <h4 class="text-lg text-gray-500">Phone</h4>
-                <p class="justify-self-end">{{ publisher.phone }}</p>
+                <p class="sm:justify-self-end">{{ publisher.phone }}</p>
               </div>
 
-              <div class="grid grid-cols-[1fr_2.5fr] gap-16">
+              <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
                 <h4 class="text-lg text-gray-500">Email</h4>
-                <p class="justify-self-end">{{ publisher.email }}</p>
+                <p class="sm:justify-self-end">{{ publisher.email }}</p>
               </div>
             </div>
 
             <div class="flex flex-col gap-2">
-              <div class="grid grid-cols-[1fr_2.5fr] gap-16">
+              <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
                 <h4 class="text-lg text-gray-500">Website</h4>
                 <a
                   :href="publisher.website"
                   target="_blank"
-                  class="justify-self-end text-blue-600"
+                  class="sm:justify-self-end text-blue-600"
                 >
                   {{ getDomainName(publisher.website) }}
                 </a>
               </div>
 
-              <div class="grid grid-cols-[1fr_2.5fr] gap-16">
+              <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
                 <h4 class="text-lg text-gray-500">Address</h4>
-                <p class="justify-self-end">{{ publisher.address }}</p>
+                <p class="sm:justify-self-end">{{ publisher.address }}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <button
-        @click="togglePublisher"
-        class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10 rounded-full bg-yellow-200 text-xl duration-300"
+
+      <div
+        class="absolute top-2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white size-16 rounded-full"
       >
-        <span class="block -translate-x-[2px]">&#11085;</span>
-      </button>
+        <button
+          @click="togglePublisher"
+          class="absolute z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10 rounded-full bg-yellow-200 text-xl duration-300"
+        >
+          <span class="block -translate-x-[2px]">&#11085;</span>
+        </button>
+      </div>
     </div>
   </main>
 </template>
