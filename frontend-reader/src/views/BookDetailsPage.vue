@@ -233,7 +233,7 @@ const onChange = (e) => {
     <div
       v-if="publisher"
       class="fixed left-0 bottom-0 max-h-[80vh] w-full px-6 pt-6 bg-white border shadow-2xl rounded-t-[3rem] duration-300"
-      :class="{ '-bottom-[105%]': !showPublisher }"
+      :class="{ '!-bottom-[105%]': !showPublisher }"
     >
       <div
         class="relative flex flex-col md:flex-row gap-6 items-start w-full h-full p-6 bg-gray-100 rounded-t-[2rem]"
