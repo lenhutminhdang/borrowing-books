@@ -42,7 +42,7 @@ const props = defineProps({
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-24 gap-y-2">
             <div class="flex flex-col gap-2">
               <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
-                <h4 class="text-lg text-gray-500">Phone</h4>
+                <h4 class="text-lg text-gray-500">Điện thoại</h4>
                 <p class="sm:justify-self-end">{{ publisher.phone }}</p>
               </div>
 
@@ -65,7 +65,7 @@ const props = defineProps({
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-[1fr_2.5fr] gap-x-16">
-                <h4 class="text-lg text-gray-500">Address</h4>
+                <h4 class="text-lg text-gray-500">Địa chỉ</h4>
                 <p class="sm:justify-self-end">{{ publisher.address }}</p>
               </div>
             </div>
