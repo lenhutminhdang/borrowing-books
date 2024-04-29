@@ -67,12 +67,12 @@ exports.findOne = async (req, res, next) => {
 };
 
 exports.findAllHistoryInfoOfReader = async (req, res, next) => {
-  const { readerId } = req.body;
+  const { id } = req.query;
 
   try {
     const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
     const historyDoc = await borrowingHistoryService.findAllHistoryInfoOfReader(
-      ObjectId.isValid(readerId) ? new ObjectId(readerId) : null
+      ObjectId.isValid(id) ? new ObjectId(id) : null
     );
 
     if (!historyDoc)

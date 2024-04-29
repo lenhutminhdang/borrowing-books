@@ -24,3 +24,14 @@ export function getDomainName(url) {
 
   return domain;
 }
+
+export function calculatePriceFrom2Date(dateString1, dateString2, price = 0) {
+  const timestamp1 = new Date(dateString1).getTime();
+  const timestamp2 = new Date(dateString2).getTime();
+
+  const borrowDays = Math.ceil(
+    Math.abs(timestamp1 - timestamp2) / (1000 * 3600 * 24)
+  );
+
+  return formatCurrency(borrowDays * price);
+}

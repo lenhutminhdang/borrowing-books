@@ -9,8 +9,8 @@ class HistoryService {
     return (await this.api.post("/", payload)).data;
   }
 
-  async getAllHistory(payload) {
-    return (await this.api.post("/reader", payload)).data;
+  async getAllHistory(readerId) {
+    return (await this.api.get(`/reader?id=${readerId}`)).data;
   }
 }
 export default new HistoryService();
