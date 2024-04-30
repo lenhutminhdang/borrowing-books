@@ -1,21 +1,22 @@
 <script setup>
-import { computed, onBeforeMount, ref, watch, watchEffect } from "vue";
+import { onBeforeMount, ref, watch, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
 import genreService from "../services/genre.service";
-import { formatCurrency } from "../utils/utils";
-
 import Pagination from "../components/pagination/Pagination.vue";
 import GenresFilter from "../components/GenresFilter.vue";
-import { useRoute, useRouter } from "vue-router";
+import { formatCurrency } from "../utils/utils";
 
 const route = useRoute();
 const router = useRouter();
+
 const genreQuery = ref(); // genre.alt
 const genre = ref();
 
 const books = ref([]);
 const renderedBooks = ref([]);
 
+// Redirect
 onBeforeMount(() => {
   if (!route.query.genre) {
     router.replace({
@@ -29,6 +30,7 @@ const renderNewBooks = (dataFromPagination) => {
   renderedBooks.value = dataFromPagination;
 };
 
+// Get genre by route query
 watch(
   () => route.query.genre,
   async (newGenre, _) => {
@@ -44,13 +46,37 @@ watch(
   }
 );
 
+// Get books by genre
 watchEffect(async () => {
   if (genre.value) {
-    console.log(genre.value._id);
     const response = await bookService.findByGenre(genre.value._id);
     if (response) {
       books.value = response;
     }
+  }
+});
+
+// Create scroll-based animation
+const bookEls = ref();
+
+watchEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animation-book");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.5,
+      rootMargin: "100px",
+    }
+  );
+
+  if (bookEls.value) {
+    bookEls.value.forEach((book) => observer.observe(book));
   }
 });
 </script>
@@ -80,7 +106,8 @@ watchEffect(async () => {
           <li
             v-for="(book, index) in renderedBooks"
             :key="book._id"
-            class="animation-book"
+            ref="bookEls"
+            class="book-item initial-style"
             :style="{ animationDelay: 100 * index + 'ms' }"
           >
             <router-link
@@ -111,6 +138,7 @@ watchEffect(async () => {
           Không tìm thấy sách...
         </p>
 
+        <!-- Pagination -->
         <Pagination
           v-if="books"
           :items="books"
@@ -123,14 +151,16 @@ watchEffect(async () => {
 </template>
 
 <style scoped>
-.animation-book {
-  animation: animation 500ms ease-in-out 1 backwards;
+.initial-style {
+  transform: translateY(100px);
+  opacity: 0;
 }
+
+.animation-book {
+  animation: animation 500ms ease-in-out 1 forwards;
+}
+
 @keyframes animation {
-  0% {
-    transform: translateY(100px);
-    opacity: 0;
-  }
   80% {
     transform: translateY(-20px);
     opacity: 0.8;
