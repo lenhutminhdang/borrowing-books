@@ -54,7 +54,7 @@ class BorrowingHistoryService extends AppService {
           bookInfo: 1,
         },
       },
-    ]);
+    ]).sort({ borrowDate: -1 });
 
     return await cursor.toArray();
   }

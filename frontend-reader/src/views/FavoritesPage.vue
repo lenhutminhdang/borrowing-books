@@ -44,7 +44,7 @@ watchEffect(async () => {
   const response = await readerService.getFavoriteBooks();
 
   if (response) {
-    favoriteBooks.value = response[0].favoriteBooksDetails;
+    favoriteBooks.value = response[0].favoriteBooksDetails.reverse();
     readerId.value = response[0]._id;
   }
 });
