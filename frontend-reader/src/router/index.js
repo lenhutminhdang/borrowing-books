@@ -8,6 +8,7 @@ import LoginPage from "../views/LoginPage.vue";
 import SignupPage from "../views/SignupPage.vue";
 import BookDetailsPage from "../views/BookDetailsPage.vue";
 import SearchPage from "../views/SearchPage.vue";
+import GenresPage from "../views/GenresPage.vue";
 import NotFound from "../views/NotFound.vue";
 
 const routes = [
@@ -27,7 +28,8 @@ const routes = [
     children: [
       {
         path: "",
-        redirect: { name: "home" },
+        name: "genres",
+        component: GenresPage,
       },
 
       {
@@ -101,7 +103,9 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    return { top: 0 };
+    if (from.name === "genres" && to.name === "genres") return;
+
+    return { left: 0, top: 0 };
   },
 });
 

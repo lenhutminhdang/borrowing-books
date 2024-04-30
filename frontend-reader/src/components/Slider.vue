@@ -55,7 +55,7 @@ const slides = computed(() => {
 </script>
 
 <template>
-  <section v-if="books.length > 0" class="flex justify-center mb-20">
+  <section v-if="books.length > 0" class="flex justify-center mb-10 md:mb-20">
     <!-- LARGE SCREEN -->
     <div>
       <div class="relative overflow-hidden rounded-md">

@@ -8,6 +8,7 @@ const staffsRouter = require("./app/routes/staff.route");
 const publishersRouter = require("./app/routes/publisher.route");
 const booksRouter = require("./app/routes/book.route");
 const borrowingHistoryRouter = require("./app/routes/borrowing-history.route");
+const genresRouter = require("./app/routes/genre.route");
 
 const app = express(express.json());
 app.use(cookieParser());
@@ -38,6 +39,9 @@ app.use("/api/books", booksRouter);
 
 // BORROWING HISTORY ROUTER
 app.use("/api/history", borrowingHistoryRouter);
+
+// GENRE ROUTER
+app.use("/api/genres", genresRouter);
 
 // Error Handler
 app.use((req, res, next) => {

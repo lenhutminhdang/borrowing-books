@@ -4,6 +4,7 @@ import bookService from "../services/book.service";
 import { formatCurrency } from "../utils/utils";
 import Slider from "../components/Slider.vue";
 import Pagination from "../components/pagination/Pagination.vue";
+import Genres from "../components/Genres.vue";
 
 const books = ref([]);
 const renderedBooks = ref([]);
@@ -36,7 +37,7 @@ const TEMP_BOOkS = computed(() => {
     <Slider v-if="books" :books="books" />
 
     <!-- Section all books -->
-    <section>
+    <section class="mb-10 md:mb-20">
       <h1 class="text-xl text-gray-600 mb-4">@Tất Cả Sách</h1>
 
       <ul
@@ -79,6 +80,12 @@ const TEMP_BOOkS = computed(() => {
         :itemsPerPage="6"
         @renderNewItems="renderNewBooks"
       />
+    </section>
+
+    <section class="mb-10 md:mb-20">
+      <h1 class="text-xl text-gray-600 mb-4">@Thể Loại</h1>
+
+      <Genres />
     </section>
   </main>
 </template>
