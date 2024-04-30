@@ -6,6 +6,21 @@ import genreService from "../services/genre.service";
 import Pagination from "../components/pagination/Pagination.vue";
 import GenresFilter from "../components/GenresFilter.vue";
 import { formatCurrency } from "../utils/utils";
+import BreadCrumbs from "../components/BreadCrumbs.vue";
+
+const CRUMBS = ref([
+  {
+    name: "Trang Chủ",
+    routeName: "home",
+  },
+  {
+    name: "Thể Loại",
+    route: "/books?genre=all",
+  },
+  {
+    name: "Tất Cả Sách",
+  },
+]);
 
 const route = useRoute();
 const router = useRouter();
@@ -21,7 +36,7 @@ onBeforeMount(() => {
   if (!route.query.genre) {
     router.replace({
       name: "genres",
-      query: { genre: "tieu-thuyet-trung-quoc" },
+      query: { genre: "all" },
     });
   }
 });
@@ -37,8 +52,13 @@ watch(
     genreQuery.value = newGenre;
 
     const response = await genreService.getGenreByAlt(genreQuery.value);
+
     if (response) {
       genre.value = response;
+
+      CRUMBS.value[CRUMBS.value.length - 1] = {
+        name: genre.value.name,
+      };
     }
   },
   {
@@ -48,8 +68,13 @@ watch(
 
 // Get books by genre
 watchEffect(async () => {
-  if (genre.value) {
+  if (genre.value && genre.value.alt !== "all") {
     const response = await bookService.findByGenre(genre.value._id);
+    if (response) {
+      books.value = response;
+    }
+  } else {
+    const response = await bookService.getAll();
     if (response) {
       books.value = response;
     }
@@ -83,8 +108,10 @@ watchEffect(() => {
 
 <template>
   <main class="text-gray-700">
+    <BreadCrumbs :crumbs="CRUMBS" />
+
     <!-- Genre Description -->
-    <header class="mb-10">
+    <header class="mb-10 mt-6">
       <h1 class="text-3xl text-gray-600 mb-4 uppercase">
         {{ genre?.name }}
       </h1>
@@ -142,7 +169,7 @@ watchEffect(() => {
         <Pagination
           v-if="books"
           :items="books"
-          :itemsPerPage="4"
+          :itemsPerPage="8"
           @renderNewItems="renderNewBooks"
         />
       </section>

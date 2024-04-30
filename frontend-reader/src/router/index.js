@@ -25,17 +25,12 @@ const routes = [
 
   {
     path: "/books",
+    name: "books",
     children: [
       {
         path: "",
         name: "genres",
         component: GenresPage,
-      },
-
-      {
-        path: "search",
-        name: "search",
-        component: SearchPage,
       },
 
       {
@@ -68,6 +63,12 @@ const routes = [
     path: "/favorites",
     name: "favorites",
     component: FavoritesPage,
+  },
+
+  {
+    path: "/search",
+    name: "search",
+    component: SearchPage,
   },
 
   {

@@ -41,6 +41,14 @@ class BookService extends AppService {
         },
       },
       {
+        $lookup: {
+          from: "genres",
+          localField: "genres",
+          foreignField: "_id",
+          as: "genresInfo",
+        },
+      },
+      {
         $project: {
           _id: 1,
           name: 1,
@@ -51,6 +59,11 @@ class BookService extends AppService {
           publicationYear: 1,
           image: 1,
           description: 1,
+          genresInfo: {
+            _id: 1,
+            name: 1,
+            alt: 1,
+          },
           publisherInfo: 1,
         },
       },

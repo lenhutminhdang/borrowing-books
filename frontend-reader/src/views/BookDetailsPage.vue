@@ -12,6 +12,21 @@ import { useAuthStore } from "../store";
 import readerService from "../services/reader.service";
 import { addDays, format } from "date-fns";
 import PublisherModal from "../components/PublisherModal.vue";
+import BreadCrumbs from "../components/BreadCrumbs.vue";
+
+const CRUMBS = ref([
+  {
+    name: "Trang Chủ",
+    routeName: "home",
+  },
+  {
+    name: "Sách",
+    route: "/books?genre=all",
+  },
+  {
+    name: "",
+  },
+]);
 
 const BROWSER_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -28,6 +43,10 @@ const showPublisher = ref(false);
 watchEffect(async () => {
   const response = await bookService.get(route.params.id);
   book.value = response[0];
+
+  CRUMBS.value[CRUMBS.value.length - 1] = {
+    name: book.value.name,
+  };
 });
 
 const addToFavorite = async () => {
@@ -120,9 +139,11 @@ const onChange = (e) => {
 
 <template>
   <main>
+    <BreadCrumbs :crumbs="CRUMBS" />
+
     <section
       v-if="book"
-      class="grid grid-cols-1 xl:grid-cols-[3fr_5fr] xl:gap-8"
+      class="grid grid-cols-1 xl:grid-cols-[3fr_5fr] xl:gap-8 mt-6"
     >
       <div class="place-self-center xl:place-self-auto">
         <img
@@ -158,7 +179,7 @@ const onChange = (e) => {
         </div>
 
         <!-- Instock -->
-        <div class="flex gap-4 mt-4">
+        <div class="flex items-center gap-4 mt-4">
           <h3 class="font-semibold">Tồn kho:</h3>
           <p class="text-[1rem] font-light whitespace-pre-line text-gray-600">
             {{ book.instock || 0 }}
@@ -202,6 +223,29 @@ const onChange = (e) => {
             classes="py-3 px-8 !bg-main !text-white"
             >YÊU THÍCH</Button
           >
+        </div>
+
+        <!-- Book Genres -->
+        <div class="flex items-center gap-4 mt-4">
+          <h3 class="font-semibold">Thể loại:</h3>
+          <div
+            class="flex flex-wrap gap-2 text-sm uppercase whitespace-pre-line text-gray-600"
+          >
+            <div v-for="(genre, index) in book.genresInfo" :key="genre._id">
+              <router-link
+                :to="{
+                  name: 'genres',
+                  query: {
+                    genre: genre.alt,
+                  },
+                }"
+                class="hover:text-main"
+              >
+                {{ genre.name }}
+              </router-link>
+              <span v-if="index < book.genresInfo.length - 1">,</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
