@@ -77,7 +77,12 @@ watchEffect(async () => {
           class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
           v-if="renderedBooks.length > 0"
         >
-          <li v-for="book in renderedBooks" :key="book._id">
+          <li
+            v-for="(book, index) in renderedBooks"
+            :key="book._id"
+            class="animation-book"
+            :style="{ animationDelay: 100 * index + 'ms' }"
+          >
             <router-link
               :to="{ name: 'book-details', params: { id: book._id } }"
               class="group text-center"
@@ -116,3 +121,23 @@ watchEffect(async () => {
     </div>
   </main>
 </template>
+
+<style scoped>
+.animation-book {
+  animation: animation 500ms ease-in-out 1 backwards;
+}
+@keyframes animation {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  80% {
+    transform: translateY(-20px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style>
