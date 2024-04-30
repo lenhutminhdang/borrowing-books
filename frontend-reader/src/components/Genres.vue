@@ -26,8 +26,10 @@ watchEffect(async () => {
             genre: genre.alt,
           },
         }"
-        class="block w-full h-full p-2 border-2 border-main-300 hover:bg-main-300 text-center rounded-lg duration-200"
-        :class="{ 'bg-main-300': activeGenre === genre.alt }"
+        class="block w-full h-full p-2 border-2 border-main-500 hover:bg-main-500 text-center rounded-lg duration-200"
+        :class="{
+          'bg-main-500 font-semibold': activeGenre === genre.alt,
+        }"
       >
         {{ genre.name }}
       </router-link>
