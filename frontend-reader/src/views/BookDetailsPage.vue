@@ -4,15 +4,16 @@ import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
 import orderService from "../services/order.service";
 import { formatCurrency } from "../utils/utils";
-import BookInfo from "../components/BookInfo.vue";
+import BookInfo from "../components/book-details/BookInfo.vue";
 import ButtonAmount from "../components/UI/ButtonAmount.vue";
 import Button from "../components/UI/Button.vue";
 import ModalWrapper from "../components/ModalWrapper.vue";
 import { useAuthStore } from "../store";
 import readerService from "../services/reader.service";
 import { addDays, format } from "date-fns";
-import PublisherModal from "../components/PublisherModal.vue";
+import PublisherModal from "../components/book-details/PublisherModal.vue";
 import BreadCrumbs from "../components/BreadCrumbs.vue";
+import Collection from "../components/book-details/Collection.vue";
 
 const CRUMBS = ref([
   {
@@ -86,6 +87,7 @@ const borrowBook = async () => {
       reader,
       borrowDate,
       dueDate,
+      payableAmount: book.value.price * amount.value,
     });
 
     // Borrowed successfully
@@ -143,7 +145,7 @@ const onChange = (e) => {
 
     <section
       v-if="book"
-      class="grid grid-cols-1 xl:grid-cols-[3fr_5fr] xl:gap-8 mt-6"
+      class="grid grid-cols-1 xl:grid-cols-[3fr_5fr] xl:gap-8 mt-6 mb-10"
     >
       <div class="place-self-center xl:place-self-auto">
         <img
@@ -248,6 +250,14 @@ const onChange = (e) => {
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Collection -->
+    <section v-if="book?.collection" class="mb-10 md:mb-20">
+      <Collection
+        :collection="book?.collection"
+        :name="book.collectionInfo[0].name"
+      />
     </section>
 
     <!-- Confirm Modal -->

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import Slide from "./Slide.vue";
+import Slide from "../home/Slide.vue";
 
 const props = defineProps({
   books: Array,
@@ -40,14 +40,10 @@ const slides = computed(() => {
   const arr = [];
   for (let i = 0; i < NUMBER_OF_SLIDES; i++) {
     arr.push(
-      [
-        ...props.books,
-        ...props.books,
-        ...props.books,
-        ...props.books,
-        ...props.books,
-        ...props.books,
-      ].slice(i * ITEMS_PER_SLIDE, (i + 1) * ITEMS_PER_SLIDE)
+      [...props.books, ...props.books].slice(
+        i * ITEMS_PER_SLIDE,
+        (i + 1) * ITEMS_PER_SLIDE
+      )
     );
   }
   return arr;

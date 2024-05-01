@@ -53,12 +53,12 @@ exports.findOne = async (req, res, next) => {
   }
 };
 
-exports.findByName = async (req, res, next) => {
+exports.findByNameAndAuthor = async (req, res, next) => {
   const searchTerm = req.query.q;
 
   try {
     const bookService = new BookService(MongoDB.client);
-    const document = await bookService.findByName(searchTerm);
+    const document = await bookService.findByNameAndAuthor(searchTerm);
 
     if (!document) return next(new ApiError(404, "book not found!"));
     return res.json(document);
@@ -70,12 +70,31 @@ exports.findByName = async (req, res, next) => {
 exports.findOneFullInfo = async (req, res, next) => {
   try {
     const bookService = new BookService(MongoDB.client);
-    const document = await bookService.findFullInfo(
+    const bookDoc = await bookService.findFullInfo(
       ObjectId.isValid(req.params.id) ? new ObjectId(req.params.id) : null
     );
 
-    if (!document[0]) return next(new ApiError(404, "book info not found!"));
-    return res.send(document);
+    if (!bookDoc[0]) return next(new ApiError(404, "book info not found!"));
+    return res.status(200).json(bookDoc);
+  } catch (error) {
+    return next(
+      new ApiError(500, `Error retrieving book info with id=${req.params.id}`)
+    );
+  }
+};
+
+exports.findManySameCollection = async (req, res, next) => {
+  try {
+    const bookService = new BookService(MongoDB.client);
+
+    const bookDoc = await bookService.findAndSortByVol({
+      collection: ObjectId.isValid(req.params.id)
+        ? new ObjectId(req.params.id)
+        : null,
+    });
+
+    if (!bookDoc) return next(new ApiError(404, "book info not found!"));
+    return res.status(200).json(bookDoc);
   } catch (error) {
     return next(
       new ApiError(500, `Error retrieving book info with id=${req.params.id}`)
@@ -89,14 +108,7 @@ exports.findByGenre = async (req, res, next) => {
     const bookService = new BookService(MongoDB.client);
     const findingGenre = ObjectId.isValid(genre) ? new ObjectId(genre) : null;
 
-    let document;
-    if (!findingGenre) {
-      document = await bookService.find({});
-    } else {
-      document = await bookService.find({
-        genres: findingGenre,
-      });
-    }
+    const document = await bookService.findByGenre(findingGenre);
 
     if (!document) return next(new ApiError(404, "book not found!"));
     return res.json(document);

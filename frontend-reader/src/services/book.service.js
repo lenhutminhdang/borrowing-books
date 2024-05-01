@@ -17,6 +17,10 @@ class BookService {
     return (await this.api.get(`/genres?genre=${searchGenre}`)).data;
   }
 
+  async findByCollection(collection) {
+    return (await this.api.get(`/collection/${collection}`)).data;
+  }
+
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
   }

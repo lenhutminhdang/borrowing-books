@@ -4,9 +4,9 @@ import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
 import genreService from "../services/genre.service";
 import Pagination from "../components/pagination/Pagination.vue";
-import GenresFilter from "../components/GenresFilter.vue";
-import { formatCurrency } from "../utils/utils";
+import GenresFilter from "../components/genres/GenresFilter.vue";
 import BreadCrumbs from "../components/BreadCrumbs.vue";
+import BookItem from "../components/BookItem.vue";
 
 const CRUMBS = ref([
   {
@@ -68,7 +68,7 @@ watch(
 
 // Get books by genre
 watchEffect(async () => {
-  if (genre.value && genre.value.alt !== "all") {
+  if (genre.value?.alt !== "all") {
     const response = await bookService.findByGenre(genre.value._id);
     if (response) {
       books.value = response;
@@ -125,9 +125,9 @@ watchEffect(() => {
     <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10 md:mb-20">
       <GenresFilter :activeGenre="genreQuery" />
 
-      <section class="pr-4 sm:pr-6">
+      <section>
         <ul
-          class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
+          class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-4 xl:grid-cols-6 gap-4"
           v-if="renderedBooks.length > 0"
         >
           <li
@@ -137,25 +137,10 @@ watchEffect(() => {
             class="book-item initial-style"
             :style="{ animationDelay: 100 * index + 'ms' }"
           >
-            <router-link
+            <BookItem
               :to="{ name: 'book-details', params: { id: book._id } }"
-              class="group text-center"
-            >
-              <div class="overflow-hidden rounded-md">
-                <img
-                  class="w-full rounded-md object-cover aspect-[9/16] group-hover:scale-105 transition-transform duration-300"
-                  :src="book.image"
-                  :alt="book.name"
-                />
-              </div>
-              <h3 class="text-lg truncate">{{ book.name }}</h3>
-              <p class="whitespace-nowrap">
-                <span class="text-yellow-500 text-xl sm:text-base">{{
-                  book.price > 0 ? formatCurrency(book.price) : "Miễn phí"
-                }}</span>
-                <span v-if="book.price > 0" class="font-light">/ngày</span>
-              </p>
-            </router-link>
+              :book="book"
+            />
           </li>
         </ul>
         <p
@@ -169,7 +154,7 @@ watchEffect(() => {
         <Pagination
           v-if="books"
           :items="books"
-          :itemsPerPage="8"
+          :itemsPerPage="12"
           @renderNewItems="renderNewBooks"
         />
       </section>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watchEffect } from "vue";
-import genreService from "../services/genre.service";
+import genreService from "../../services/genre.service";
 
 const props = defineProps({
   activeGenre: String,

@@ -1,6 +1,6 @@
 <script setup>
 import { Teleport } from "vue";
-import { getDomainName } from "../utils/utils";
+import { getDomainName } from "../../utils/utils";
 
 const props = defineProps({
   publisher: Object,

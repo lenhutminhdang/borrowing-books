@@ -1,15 +1,13 @@
 <script setup>
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import PagButtons from "./PagButtons.vue";
 
+const emit = defineEmits(["renderNewItems"]);
 const props = defineProps({
   items: Array,
   itemsPerPage: Number,
 });
 
-const emit = defineEmits(["renderNewItems"]);
-
-// start from 1
 const currentPage = ref(1);
 
 const changeCurrentPage = (newPage) => {
@@ -28,6 +26,11 @@ const displayedItems = computed(() =>
   props.items.slice(firstDisplayedItem.value - 1, lastDisplayItem.value)
 );
 
+// Reset currentPage if items change
+watch(
+  () => props.items,
+  () => (currentPage.value = 1)
+);
 watchEffect(() => emit("renderNewItems", displayedItems.value));
 </script>
 

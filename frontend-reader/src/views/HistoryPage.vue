@@ -4,7 +4,7 @@ import { useAuthStore } from "../store";
 import { useRouter } from "vue-router";
 import orderService from "../services/order.service";
 import Pagination from "../components/pagination/Pagination.vue";
-import { calculatePriceFrom2Date } from "../utils/utils";
+import { formatCurrency } from "../utils/utils";
 
 const store = useAuthStore();
 const router = useRouter();
@@ -66,30 +66,24 @@ watchEffect(async () => {
         <router-link
           :to="{
             name: 'book-details',
-            params: { id: order.bookInfo[0]._id },
+            params: { id: order.bookInfo._id },
           }"
           class="md:h-32 grid grid-cols-[1.5fr_3.5fr] md:grid-cols-[1fr_5fr] items-stretch gap-4 outline-none outline-offset-0 focus:outline-yellow-400 rounded-md"
         >
           <img
             class="aspect-[9/16] h-full rounded-md object-cover"
-            :src="order.bookInfo[0].image"
-            :alt="order.bookInfo[0].name"
+            :src="order.bookInfo.image"
+            :alt="order.bookInfo.name"
           />
           <div class="flex gap-4 flex-col md:grid md:grid-cols-5">
             <p class="flex items-center">
-              {{ order.bookInfo[0].name }}
+              {{ order.bookInfo.name }}
             </p>
             <p class="flex items-center">{{ order.status }}</p>
             <p class="flex items-center">{{ order.borrowDate }}</p>
             <p class="flex items-center">{{ order.dueDate }}</p>
             <p class="flex items-center">
-              {{
-                calculatePriceFrom2Date(
-                  order.borrowDate,
-                  order.dueDate,
-                  order.bookInfo[0].price
-                )
-              }}
+              {{ formatCurrency(order.payableAmount) }}
             </p>
           </div>
         </router-link>

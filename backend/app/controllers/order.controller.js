@@ -1,11 +1,11 @@
-const { ObjectId } = require("mongodb");
+const { ObjectId, Timestamp } = require("mongodb");
 const ApiError = require("../api-error");
 const OrderService = require("../services/order.service");
 const MongoDB = require("../utils/mongodb.util");
 
 // Create and Save a new borrowing history (Borrow book feature)
 exports.create = async (req, res, next) => {
-  const { reader, book, borrowDate, dueDate } = req.body;
+  const { reader, book, borrowDate, dueDate, payableAmount } = req.body;
   try {
     const orderService = new OrderService(MongoDB.client);
     const document = await orderService.create({
@@ -13,12 +13,15 @@ exports.create = async (req, res, next) => {
       book: ObjectId.isValid(book) ? new ObjectId(book) : null,
       borrowDate,
       dueDate,
+      payableAmount: +payableAmount,
+      isPaid: false,
       status: "chưa nhận sách",
+      createdAt: new Date(),
     });
+    // paidDate
 
     // Cần giảm số lượng sách tồn kho trong books collection
-
-    return res.send(document);
+    return res.status(200).json(document);
   } catch (error) {
     console.log("error", error);
 

@@ -1,5 +1,5 @@
 <script setup>
-import Genres from "../components/Genres.vue";
+import Genres from "./Genres.vue";
 const props = defineProps({
   activeGenre: String,
 });

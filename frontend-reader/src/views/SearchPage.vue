@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
 import bookService from "../services/book.service";
-import Button from "../components/UI/Button.vue";
 import Input from "../components/form/Input.vue";
 import SearchIcon from "../components/icons/SearchIcon.vue";
 import Pagination from "../components/pagination/Pagination.vue";
@@ -9,15 +8,19 @@ import Pagination from "../components/pagination/Pagination.vue";
 const searchResults = ref([]);
 const searchTerm = ref("");
 const renderedSearchResults = ref([]);
+const isFetching = ref(false);
 
 const fetchData = async () => {
   try {
-    const response = await bookService.findByName(searchTerm.value);
-
-    searchResults.value = response;
+    if (searchTerm.value.trim().length >= 3) {
+      isFetching.value = true;
+      const response = await bookService.findByName(searchTerm.value);
+      searchResults.value = response;
+    }
   } catch (error) {
     console.log(error);
   }
+  isFetching.value = false;
 };
 
 const renderNewSearchResults = (dataFromPagination) => {
@@ -49,22 +52,22 @@ watch(searchTerm, () => {
 <template>
   <main class="text-gray-700">
     <section class="md:mx-20 xl:mx-40">
-      <form @submit.prevent="fetchData" class="flex justify-center">
+      <div class="flex justify-center">
         <Input
           type="text"
           name="text"
-          classes="grow !bg-white !border !border-r-0 border-gray-300 !outline-none !rounded-l-full"
-          placeholder="Nhập tên sách..."
+          classes="grow !bg-white !border !border-r-0 border-gray-300 !outline-none !rounded-l-full placeholder:text-gray-500 placeholder:italic"
+          placeholder="Nhập tên sách hoặc tên tác giả..."
           v-model="searchTerm"
           :onChange="handleChange"
         />
 
-        <button
+        <div
           class="size-[3.4rem] p-3 bg-white rounded-r-full border border-l-0 border-gray-300"
         >
           <SearchIcon />
-        </button>
-      </form>
+        </div>
+      </div>
 
       <!-- Search Results -->
       <div>
@@ -87,7 +90,7 @@ watch(searchTerm, () => {
                   {{ book.name }}
                 </p>
                 <p class="text-sm italic text-gray-600">
-                  {{ book.author }}
+                  {{ book.authorsInfo[0].name }}
                 </p>
               </div>
             </router-link>
@@ -100,17 +103,20 @@ watch(searchTerm, () => {
           @renderNewItems="renderNewSearchResults"
         />
       </div>
-      <p
-        v-if="searchResults.length === 0 && searchTerm !== ''"
-        class="text-center mt-10"
-      >
-        Không tìm thấy kết quả
-      </p>
-      <p
-        v-if="searchResults.length === 0 && searchTerm === ''"
-        class="text-center mt-10"
-      >
-        Nhập tên sách để tìm kiếm
+
+      <!-- Fallback text -->
+      <p class="text-center mt-10">
+        <template v-if="isFetching">Đang tìm kiếm...</template>
+        <template v-else>
+          <template
+            v-if="searchResults.length === 0 && searchTerm.trim().length >= 3"
+          >
+            Không tìm thấy kết quả
+          </template>
+          <template v-else>
+            Nhập tên sách hoặc tên tác giả để tìm kiếm
+          </template>
+        </template>
       </p>
     </section>
   </main>
