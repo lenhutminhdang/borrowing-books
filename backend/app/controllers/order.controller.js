@@ -1,14 +1,14 @@
 const { ObjectId } = require("mongodb");
 const ApiError = require("../api-error");
-const BorrowingHistoryService = require("../services/borrowing-history.service");
+const OrderService = require("../services/order.service");
 const MongoDB = require("../utils/mongodb.util");
 
 // Create and Save a new borrowing history (Borrow book feature)
 exports.create = async (req, res, next) => {
   const { reader, book, borrowDate, dueDate } = req.body;
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
-    const document = await borrowingHistoryService.create({
+    const orderService = new OrderService(MongoDB.client);
+    const document = await orderService.create({
       reader: ObjectId.isValid(reader) ? new ObjectId(reader) : null,
       book: ObjectId.isValid(book) ? new ObjectId(book) : null,
       borrowDate,
@@ -33,12 +33,12 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
 
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
+    const orderService = new OrderService(MongoDB.client);
     const { name } = req.query;
     if (name) {
-      documents = await borrowingHistoryService.findByName(name);
+      documents = await orderService.findByName(name);
     } else {
-      documents = await borrowingHistoryService.find({});
+      documents = await orderService.find({});
     }
   } catch (error) {
     return next(
@@ -51,27 +51,24 @@ exports.findAll = async (req, res, next) => {
 
 exports.findOne = async (req, res, next) => {
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
-    const document = await borrowingHistoryService.findById(req.params.id);
+    const orderService = new OrderService(MongoDB.client);
+    const document = await orderService.findById(req.params.id);
     if (!document)
       return next(new ApiError(404, "borrowing history not found!"));
     return res.send(document);
   } catch (error) {
     return next(
-      new ApiError(
-        500,
-        `Error retrieving borrowing history with id=${req.params.id}`
-      )
+      new ApiError(500, `Error retrieving order with id=${req.params.id}`)
     );
   }
 };
 
-exports.findAllHistoryInfoOfReader = async (req, res, next) => {
+exports.findAllOrdersInfoOfReader = async (req, res, next) => {
   const { id } = req.query;
 
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
-    const historyDoc = await borrowingHistoryService.findAllHistoryInfoOfReader(
+    const orderService = new OrderService(MongoDB.client);
+    const historyDoc = await orderService.findAllOrdersInfoOfReader(
       ObjectId.isValid(id) ? new ObjectId(id) : null
     );
 
@@ -80,7 +77,7 @@ exports.findAllHistoryInfoOfReader = async (req, res, next) => {
 
     return res.json(historyDoc);
   } catch (error) {
-    return next(new ApiError(500, `Error retrieving borrowing history`));
+    return next(new ApiError(500, `Error retrieving orders history`));
   }
 };
 
@@ -90,12 +87,9 @@ exports.update = async (req, res, next) => {
   }
 
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
+    const orderService = new OrderService(MongoDB.client);
 
-    const document = await borrowingHistoryService.update(
-      req.params.id,
-      req.body
-    );
+    const document = await orderService.update(req.params.id, req.body);
 
     if (!document) {
       return next(new ApiError(404, "borrowing history not found!"));
@@ -113,8 +107,8 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
-    const document = await borrowingHistoryService.delete(req.params.id);
+    const orderService = new OrderService(MongoDB.client);
+    const document = await orderService.delete(req.params.id);
     if (!document) {
       return next(new ApiError(404, "borrowing history not found!"));
     }
@@ -138,9 +132,9 @@ exports.updateStatus = async (req, res, next) => {
   const { status: newStatus } = req.body;
 
   try {
-    const borrowingHistoryService = new BorrowingHistoryService(MongoDB.client);
+    const orderService = new OrderService(MongoDB.client);
 
-    const document = await borrowingHistoryService.updateStatus(
+    const document = await orderService.updateStatus(
       ObjectId.isValid(historyId) ? new ObjectId(historyId) : null,
       newStatus
     );

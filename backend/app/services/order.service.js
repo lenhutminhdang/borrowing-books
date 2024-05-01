@@ -1,12 +1,12 @@
 const AppService = require("./app.service");
 
-class BorrowingHistoryService extends AppService {
+class OrderService extends AppService {
   constructor(client) {
-    super(client, "borrowinghistory");
+    super(client, "orders");
   }
 
   extractData(payload) {
-    const borrowingHistory = {
+    const order = {
       reader: payload.reader,
       book: payload.book,
       borrowDate: payload.borrowDate,
@@ -15,24 +15,22 @@ class BorrowingHistoryService extends AppService {
     };
 
     // remove undefined fields
-    Object.keys(borrowingHistory).forEach((key) => {
-      return (
-        borrowingHistory[key] === undefined && delete borrowingHistory[key]
-      );
+    Object.keys(order).forEach((key) => {
+      return order[key] === undefined && delete order[key];
     });
 
-    return borrowingHistory;
+    return order;
   }
 
-  async updateStatus(historyId, newStatus) {
+  async updateStatus(orderId, newStatus) {
     const result = await this.Collection.updateOne(
-      { _id: historyId },
+      { _id: orderId },
       { $set: { status: newStatus } }
     );
     return result;
   }
 
-  async findAllHistoryInfoOfReader(readerId) {
+  async findAllOrdersInfoOfReader(readerId) {
     const cursor = await this.Collection.aggregate([
       {
         $match: { reader: readerId },
@@ -40,7 +38,7 @@ class BorrowingHistoryService extends AppService {
       {
         $lookup: {
           from: "books", // from books collection
-          localField: "book", // from history document
+          localField: "book", // from order document
           foreignField: "_id", // from books collection
           as: "bookInfo",
         },
@@ -60,4 +58,4 @@ class BorrowingHistoryService extends AppService {
   }
 }
 
-module.exports = BorrowingHistoryService;
+module.exports = OrderService;

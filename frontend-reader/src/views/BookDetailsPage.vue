@@ -2,7 +2,7 @@
 import { computed, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import bookService from "../services/book.service";
-import historyService from "../services/history.service";
+import orderService from "../services/order.service";
 import { formatCurrency } from "../utils/utils";
 import BookInfo from "../components/BookInfo.vue";
 import ButtonAmount from "../components/UI/ButtonAmount.vue";
@@ -81,7 +81,7 @@ const borrowBook = async () => {
   );
 
   if (bookId && reader) {
-    const response = await historyService.borrowBook({
+    const response = await orderService.borrowBook({
       book: bookId,
       reader,
       borrowDate,

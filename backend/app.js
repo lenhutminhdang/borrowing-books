@@ -7,7 +7,7 @@ const readersRouter = require("./app/routes/reader.route");
 const staffsRouter = require("./app/routes/staff.route");
 const publishersRouter = require("./app/routes/publisher.route");
 const booksRouter = require("./app/routes/book.route");
-const borrowingHistoryRouter = require("./app/routes/borrowing-history.route");
+const orderRouter = require("./app/routes/order.route");
 const genresRouter = require("./app/routes/genre.route");
 
 const app = express(express.json());
@@ -37,8 +37,8 @@ app.use("/api/publishers", publishersRouter);
 // BOOK ROUTER
 app.use("/api/books", booksRouter);
 
-// BORROWING HISTORY ROUTER
-app.use("/api/history", borrowingHistoryRouter);
+// ORDER ROUTER
+app.use("/api/orders", orderRouter);
 
 // GENRE ROUTER
 app.use("/api/genres", genresRouter);
