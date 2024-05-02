@@ -12,7 +12,7 @@ const isFetching = ref(false);
 
 const fetchData = async () => {
   try {
-    if (searchTerm.value.trim().length >= 3) {
+    if (searchTerm.value.trim().length >= 2) {
       isFetching.value = true;
       const response = await bookService.findByName(searchTerm.value);
       searchResults.value = response;
@@ -83,7 +83,7 @@ watch(searchTerm, () => {
               <img
                 :src="book.image"
                 :alt="book.name"
-                class="w-10 h-[16] object-cover rounded-[0.2rem]"
+                class="w-10 h-16 object-cover rounded-[0.2rem]"
               />
               <div>
                 <p class="font-semibold">
@@ -107,15 +107,12 @@ watch(searchTerm, () => {
       <!-- Fallback text -->
       <p class="text-center mt-10">
         <template v-if="isFetching">Đang tìm kiếm...</template>
-        <template v-else>
-          <template
-            v-if="searchResults.length === 0 && searchTerm.trim().length >= 3"
-          >
-            Không tìm thấy kết quả
-          </template>
-          <template v-else>
-            Nhập tên sách hoặc tên tác giả để tìm kiếm
-          </template>
+        <template v-else-if="!isFetching && searchResults.length === 0">
+          {{
+            searchTerm.trim().length >= 2
+              ? "Không tìm thấy kết quả"
+              : "Nhập tên sách hoặc tên tác giả để tìm kiếm"
+          }}
         </template>
       </p>
     </section>

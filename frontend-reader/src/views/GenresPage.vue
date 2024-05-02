@@ -7,6 +7,8 @@ import Pagination from "../components/pagination/Pagination.vue";
 import GenresFilter from "../components/genres/GenresFilter.vue";
 import BreadCrumbs from "../components/BreadCrumbs.vue";
 import BookItem from "../components/BookItem.vue";
+import GenresSortDropdown from "../components/genres/GenresSortDropdown.vue";
+import { SORT_OPTIONS, setDefaultSortOptionIfNotMatch } from "../utils/utils";
 
 const CRUMBS = ref([
   {
@@ -15,7 +17,7 @@ const CRUMBS = ref([
   },
   {
     name: "Thể Loại",
-    route: "/books?genre=all",
+    route: `/books?genre=all&sort=${SORT_OPTIONS[0].value}`,
   },
   {
     name: "Tất Cả Sách",
@@ -27,16 +29,20 @@ const router = useRouter();
 
 const genreQuery = ref(); // genre.alt
 const genre = ref();
+const sortBy = ref(route.query.sort);
 
 const books = ref([]);
 const renderedBooks = ref([]);
 
 // Redirect
 onBeforeMount(() => {
-  if (!route.query.genre) {
-    router.replace({
+  if (!route.query.genre || !route.query.sort) {
+    router.push({
       name: "genres",
-      query: { genre: "all" },
+      query: {
+        genre: "all",
+        sort: setDefaultSortOptionIfNotMatch(route.query.sort),
+      },
     });
   }
 });
@@ -45,12 +51,16 @@ const renderNewBooks = (dataFromPagination) => {
   renderedBooks.value = dataFromPagination;
 };
 
-// Get genre by route query
+const handleSortDropdownChange = (newSortOpt) => {
+  sortBy.value = newSortOpt;
+  router.push({ query: { genre: genreQuery.value, sort: sortBy.value } });
+};
+
+// Get genre by route query change
 watch(
   () => route.query.genre,
   async (newGenre, _) => {
     genreQuery.value = newGenre;
-
     const response = await genreService.getGenreByAlt(genreQuery.value);
 
     if (response) {
@@ -69,12 +79,15 @@ watch(
 // Get books by genre
 watchEffect(async () => {
   if (genre.value?.alt !== "all") {
-    const response = await bookService.findByGenre(genre.value._id);
+    const response = await bookService.findByGenre({
+      genre: genre.value?._id,
+      sort: sortBy.value,
+    });
     if (response) {
       books.value = response;
     }
   } else {
-    const response = await bookService.getAll();
+    const response = await bookService.getAll(sortBy.value);
     if (response) {
       books.value = response;
     }
@@ -95,7 +108,7 @@ watchEffect(() => {
       });
     },
     {
-      threshold: 0.5,
+      threshold: 0.3,
       rootMargin: "100px",
     }
   );
@@ -116,14 +129,20 @@ watchEffect(() => {
         {{ genre?.name }}
       </h1>
       <p class="text-lg font-light">
-        {{ genre?.description }}
+        {{
+          genre?.description ||
+          "Thể loại không tồn tại. Vui lòng chọn thể loại khác."
+        }}
       </p>
     </header>
 
     <!-- Filter and Books -->
-    <h2 class="text-xl mb-6">THỂ LOẠI</h2>
+    <div class="mb-6 flex items-start sm:items-end justify-between">
+      <h2 class="text-[1.6rem] sm:text-2xl">THỂ LOẠI</h2>
+      <GenresSortDropdown @on-dropdown-change="handleSortDropdownChange" />
+    </div>
     <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10 md:mb-20">
-      <GenresFilter :activeGenre="genreQuery" />
+      <GenresFilter :activeGenre="genreQuery" :sortBy="sortBy" />
 
       <section>
         <ul

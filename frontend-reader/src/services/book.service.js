@@ -5,16 +5,18 @@ class BookService {
     this.api = createApiClient(baseUrl);
   }
 
-  async getAll() {
-    return (await this.api.get("/")).data;
+  async getAll(sort) {
+    return (await this.api.get(`?sort=${sort}`)).data;
   }
 
   async findByName(searchTerm) {
     return (await this.api.get(`/search?q=${searchTerm}`)).data;
   }
 
-  async findByGenre(searchGenre) {
-    return (await this.api.get(`/genres?genre=${searchGenre}`)).data;
+  async findByGenre(payload) {
+    return (
+      await this.api.get(`/genres?genre=${payload.genre}&sort=${payload.sort}`)
+    ).data;
   }
 
   async findByCollection(collection) {

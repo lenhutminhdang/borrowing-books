@@ -4,6 +4,7 @@ import genreService from "../../services/genre.service";
 
 const props = defineProps({
   activeGenre: String,
+  sortBy: String,
 });
 
 const genres = ref([]);
@@ -24,6 +25,7 @@ watchEffect(async () => {
           name: 'genres',
           query: {
             genre: genre.alt,
+            sort: sortBy || 'newest',
           },
         }"
         class="block w-full h-full p-2 border-2 border-main-500 hover:bg-main-500 text-center rounded-lg duration-200"

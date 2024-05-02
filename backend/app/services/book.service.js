@@ -1,6 +1,35 @@
 const { ObjectId } = require("mongodb");
 const AppService = require("./app.service");
 
+const sortOptions = {
+  newest: {
+    publicationYear: -1,
+    volumeNumber: -1,
+  },
+  oldest: {
+    publicationYear: 1,
+    volumeNumber: 1,
+  },
+  "name-ascending": {
+    name: 1,
+  },
+  "name-descending": {
+    name: -1,
+  },
+  "price-ascending": {
+    price: 1,
+  },
+  "price-descending": {
+    price: -1,
+  },
+  "instock-ascending": {
+    instock: 1,
+  },
+  "instock-descending": {
+    instock: -1,
+  },
+};
+
 class BookService extends AppService {
   constructor(client) {
     super(client, "books");
@@ -59,7 +88,14 @@ class BookService extends AppService {
     return await cursor.toArray();
   }
 
-  async findByGenre(findingGenre) {
+  async findAll(sort) {
+    const cursor = await this.Collection.find({}).sort(
+      sortOptions[sort] || sortOptions["newest"]
+    );
+    return await cursor.toArray();
+  }
+
+  async findByGenre(payload) {
     let cursor;
     const project = {
       _id: 1,
@@ -69,19 +105,17 @@ class BookService extends AppService {
       volumeNumber: 1,
       publicationYear: 1,
     };
-    const sort = {
-      publicationYear: -1,
-      volumeNumber: -1,
-    };
 
-    if (!findingGenre) {
-      cursor = await this.Collection.find({}).project(project).sort(sort);
+    if (!payload.findingGenre) {
+      cursor = await this.Collection.find({})
+        .project(project)
+        .sort(sortOptions[payload.sort] || sortOptions["newest"]);
     } else {
       cursor = await this.Collection.find({
-        genres: findingGenre,
+        genres: payload.findingGenre,
       })
         .project(project)
-        .sort(sort);
+        .sort(sortOptions[payload.sort] || sortOptions["newest"]);
     }
     return await cursor.toArray();
   }
