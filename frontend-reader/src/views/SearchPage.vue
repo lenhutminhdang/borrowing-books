@@ -14,7 +14,7 @@ const fetchData = async () => {
   try {
     if (searchTerm.value.trim().length >= 2) {
       isFetching.value = true;
-      const response = await bookService.findByName(searchTerm.value);
+      const response = await bookService.findByNameAndAuthor(searchTerm.value);
       searchResults.value = response;
     }
   } catch (error) {

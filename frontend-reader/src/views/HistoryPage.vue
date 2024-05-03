@@ -39,22 +39,25 @@ watchEffect(async () => {
 <template>
   <main class="text-gray-700">
     <header class="mb-10">
-      <div class="relative">
+      <div class="relative mb-4">
         <img
           src="../assets/banner.jpg"
           alt="banner"
           class="block rounded-lg object-cover w-full h-48 md:h-auto"
         />
         <a
-          href="#"
+          href="https://maps.app.goo.gl/TpADvczkqbDe3u6j9"
           target="_blank"
-          class="absolute left-4 bottom-2 flex gap-1 text-white text-md uppercase font-semibold text-shadow"
-          >Xem địa chỉ cửa hàng
-          <span class="inline-block size-6 text stroke-white"
+          class="absolute right-4 bottom-2 flex gap-1 text-white text-sm md:text-base uppercase font-semibold text-shadow"
+          ><span>Xem địa chỉ cửa hàng</span>
+          <span class="inline-block size-5 md:size-6 text stroke-white"
             ><ArrUpRightIcon
           /></span>
         </a>
       </div>
+      <p class="text-lg">
+        Quý khách vui lòng đến cửa hàng để thanh toán và nhận sách.
+      </p>
     </header>
     <section>
       <h1 class="text-xl text-gray-600 mb-2">@Lịch sử mượn sách</h1>
@@ -103,7 +106,11 @@ watchEffect(async () => {
               <p class="flex items-center">{{ order.borrowDate }}</p>
               <p class="flex items-center">{{ order.dueDate }}</p>
               <p class="flex items-center">
-                {{ formatCurrency(order.payableAmount) }}
+                {{
+                  order.payableAmount > 0
+                    ? formatCurrency(order.payableAmount)
+                    : "Miễn phí"
+                }}
               </p>
             </div>
           </router-link>

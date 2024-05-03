@@ -14,10 +14,10 @@ const store = useAuthStore();
     <li @click="$emit('closeMenu')">
       <Link route-name="search">Tìm kiếm</Link>
     </li>
-    <li @click="$emit('closeMenu')">
+    <li v-if="store.isLoggedIn" @click="$emit('closeMenu')">
       <Link route-name="history">Lịch sử</Link>
     </li>
-    <li @click="$emit('closeMenu')">
+    <li v-if="store.isLoggedIn" @click="$emit('closeMenu')">
       <Link route-name="favorites">Yêu thích</Link>
     </li>
     <li v-if="store.isLoggedIn" @click="$emit('closeMenu')">

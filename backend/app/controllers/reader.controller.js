@@ -102,7 +102,7 @@ exports.getProfile = async (req, res, next) => {
 
       if (!readerDoc) return next(new ApiError(404, "Reader not found!"));
 
-      return res.json(readerDoc);
+      return res.json({ ...readerDoc, password: "???" });
     }
   } catch (error) {
     return next(new ApiError(500, `Error retrieving reader`));

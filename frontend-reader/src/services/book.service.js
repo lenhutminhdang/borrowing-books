@@ -9,7 +9,7 @@ class BookService {
     return (await this.api.get(`?sort=${sort}`)).data;
   }
 
-  async findByName(searchTerm) {
+  async findByNameAndAuthor(searchTerm) {
     return (await this.api.get(`/search?q=${searchTerm}`)).data;
   }
 
