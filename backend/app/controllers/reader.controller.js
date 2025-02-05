@@ -67,10 +67,14 @@ exports.login = async (req, res, next) => {
           (err, token) => {
             if (err) throw err;
 
-            res.cookie("token", token, {
-              sameSite: "none",
-            });
-            res.json(readerDoc); // DONT FORGET TO ADD THIS SHIT AFTER set cookie
+            res.cookie(
+              "token",
+              token
+              //   {
+              //   sameSite: "none",
+              // }
+            );
+            res.json(readerDoc);
           }
         );
       } else {
